@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useSession } from "../stores/session";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
+
+// BACKGROUND
+import bg from "../images/bg.png";
 
 export default function Login() {
   const nav = useNavigate();
@@ -27,122 +31,118 @@ export default function Login() {
   }
 
   return (
-    <div className="min-h-screen grid lg:grid-cols-2 bg-white">
-      {/* LEFT: hero */}
-      <div className="relative hidden lg:block">
-        {/* Use your own water image here for a perfect match */}
+    <main className="h-screen w-screen grid lg:grid-cols-2 bg-[#F5F7F8]">
+      {/* BRAND + PROMO */}
+      <section className="relative hidden lg:block" aria-labelledby="promo-title">
+        {/* BACKGROUND */}
         <div
-          className="absolute inset-0 bg-cover bg-center"
-          style={{
-            backgroundImage:
-              "url(/images/water-hero.jpg)", // put an image in /public/images
-          }}
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat h-full"
+          style={{ backgroundImage: `url(${bg})` }}
+          aria-hidden="true"
         />
-        {/* soft teal wash if your image is darker */}
-        <div className="absolute inset-0 bg-cyan-300/25 mix-blend-multiply" />
+        {/* OVERLAY */}
+        <div className="absolute inset-0 bg-cyan-300/25 mix-blend-multiply" aria-hidden="true" />
         <div className="relative h-full">
-          <div className="absolute top-8 left-10 text-2xl font-semibold">
-            Papertrading
-          </div>
+          <header className="absolute top-8 left-10 text-2xl font-semibold text-black">
+            papertrading
+          </header>
 
-          <div className="absolute left-10 right-10 top-32 max-w-xl">
-            <div className="uppercase tracking-[0.15em] text-sm text-black/70">
-              Limited time
-            </div>
-            <h1 className="mt-3 font-serif text-[48px] leading-[1.1]">
-              Dive into our
+          <div className="absolute left-10 top-52 max-w-xl">
+            <p className="uppercase tracking-[0.15em] text-sm text-black/70 pl-1 ">
+              WELCOME
+            </p>
+            <h1 id="promo-title" className="mt-3 font-serif text-[48px] leading-[1.1] text-black ">
+              Simulated trades
               <br />
-              Summer Match
+              Real insights
             </h1>
             <p className="mt-4 text-black/75 leading-relaxed">
-              We’re finishing summer strong with a 2% match on an eligible
-              margin account transfer — or 1% on just about anything else.
-              Offer ends September 5, so don’t forget to register soon.
+              Papertrading is a simulated trading app where you can practice strategies with real-time
+              prices, place virtual buy/sell orders, and track performance without putting real money
+              on the line.
             </p>
-            <a href="#" className="mt-3 inline-block underline">
-              T&amp;Cs apply.
-            </a>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* RIGHT: login card */}
-      <div className="flex items-center justify-center p-6">
+      {/* LOGIN */}
+      <section className="flex items-center justify-center p-6" aria-labelledby="login-title">
         <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-[0_1px_0_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]">
-          <h2 className="text-center text-2xl font-semibold">Welcome back</h2>
+          <h2 id="login-title" className="text-center text-2xl font-semibold text-black">
+            Welcome back
+          </h2>
 
-          <form onSubmit={onSubmit} className="mt-6 space-y-4">
-            <label className="block">
-              <span className="sr-only">Email</span>
+          <form onSubmit={onSubmit} className="mt-6 space-y-4" aria-describedby={err ? "form-error" : undefined}>
+            <div>
+              <label htmlFor="email" className="sr-only">Email</label>
               <input
+                id="email"
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full h-12 rounded-xl border border-black/15 px-4 outline-none focus:ring-2 focus:ring-black/80"
+                autoComplete="email"
+                required
+                className="w-full h-12 rounded-xl border border-black/15 px-4 outline-none focus:ring-2 focus:ring-black/80 text-black"
               />
-            </label>
+            </div>
 
-            <label className="block relative">
-              <span className="sr-only">Password</span>
+            <div className="relative">
+              <label htmlFor="password" className="sr-only">Password</label>
               <input
+                id="password"
                 type={showPw ? "text" : "password"}
                 placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full h-12 rounded-xl border border-black/15 px-4 pr-12 outline-none focus:ring-2 focus:ring-black/80"
+                autoComplete="current-password"
+                className="w-full h-12 rounded-xl border border-black/15 px-4 pr-14 outline-none focus:ring-2 focus:ring-black/80 text-black"
               />
+
               <button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}
-                className="absolute inset-y-0 right-3 my-auto h-8 w-8 rounded-full grid place-items-center text-black/60"
+                className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center h-9 w-9 rounded-full bg-black text-white hover:bg-black/90 focus:outline-none focus:ring-2 focus:ring-white/70"
+                aria-pressed={showPw}
                 aria-label={showPw ? "Hide password" : "Show password"}
                 title={showPw ? "Hide" : "Show"}
               >
-                {showPw ? "🙈" : "👁️"}
+                {showPw ? (
+                  <EyeSlashIcon className="h-5 w-5 text-white" aria-hidden="true" /> 
+                ) : (
+                  <EyeIcon className="h-5 w-5 text-white" aria-hidden="true" />     
+                )}
               </button>
-            </label>
-
-            <div className="text-sm">
-              <Link to="/reset" className="underline">
-                Forgot password?
-              </Link>
             </div>
 
-            {err && <div className="text-red-600 text-sm">{err}</div>}
+            <p className="text-sm text-black/70 pl-1 ">
+              <Link to="/reset" className="font-semibold">Forgot password?</Link>
+            </p>
+
+            {err && (
+              <div id="form-error" className="text-red-600 text-sm" role="alert" aria-live="assertive">
+                {err}
+              </div>
+            )}
 
             <button
+              type="submit"
               disabled={busy}
-              className="w-full h-11 rounded-full bg-black text-white disabled:opacity-60"
+              aria-busy={busy}
+              className="w-full h-11 rounded-lg bg-black text-white disabled:opacity-60"
             >
               {busy ? "…" : "Log in"}
             </button>
           </form>
 
-          <p className="mt-5 text-center text-sm">
-            Don’t have an account?{" "}
-            <Link to="/register" className="underline">
-              Sign up
-            </Link>
+          <p className="mt-5 text-center text-sm text-black">
+            Don't have an account? <Link to="/register" className="font-semibold">Sign up</Link>
           </p>
         </div>
-      </div>
-
-      {/* FOOTER */}
-      <div className="hidden lg:flex col-span-2 items-center justify-between px-10 py-6 text-sm text-black/70">
-        <a href="#" className="underline">
-          Help Centre
-        </a>
-        <div className="space-x-4">
-          <span>Download our mobile apps</span>
-          <a href="#" className="underline">
-            iPhone
-          </a>
-          <a href="#" className="underline">
-            Android
-          </a>
-        </div>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
+
+
+
