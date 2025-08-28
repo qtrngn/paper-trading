@@ -25,7 +25,7 @@ export default function Register() {
     setBusy(true);
     try {
       await register(email, password);
-      nav("/dashboard");
+      nav("/gate");
     } catch (e: any) {
       setErr(e?.message || "Registration failed");
     } finally {
@@ -35,7 +35,7 @@ export default function Register() {
 
   return (
     <main className="h-screen w-screen grid lg:grid-cols-2 bg-[#F5F7F8]">
-      {/* BRAND + PROMO (match Login) */}
+      {/* BRAND */}
       <section className="relative hidden lg:block" aria-labelledby="promo-title">
         {/* BACKGROUND */}
         <div
@@ -68,7 +68,7 @@ export default function Register() {
         </div>
       </section>
 
-      {/* REGISTER CARD (styled like Login) */}
+      {/* REGISTER CARD */}
       <section className="flex items-center justify-center p-6" aria-labelledby="register-title">
         <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-[0_1px_0_rgba(0,0,0,0.06),0_20px_40px_rgba(0,0,0,0.06)]">
           <h2 id="register-title" className="text-center text-2xl font-semibold text-black">
@@ -107,7 +107,7 @@ export default function Register() {
                 className="w-full h-12 rounded-xl border border-black/15 px-4 pr-14 outline-none focus:ring-2 focus:ring-black/80 text-black"
               />
 
-              {/* match the Login eye toggle style */}
+              
               <button
                 type="button"
                 onClick={() => setShowPw((v) => !v)}

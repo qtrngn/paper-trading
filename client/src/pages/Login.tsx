@@ -22,7 +22,7 @@ export default function Login() {
     setBusy(true);
     try {
       await login(email, password);
-      nav("/dashboard");
+      nav("/gate");
     } catch (e: any) {
       setErr(e?.message || "Login failed");
     } finally {
