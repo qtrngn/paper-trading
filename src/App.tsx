@@ -1,9 +1,20 @@
-import React from 'react';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import LoginPage from '@/pages/Login';
+import HomePage from '@/pages/Home';
+import AuthRoute from '@/router/AuthRoute';
+import '@/lib/firebase';
 
-export const App = () => {
+
+const App = () => {
   return (
-    <div className="text-3xl font-bold underline">App</div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<AuthRoute><HomePage /></AuthRoute>} />
+        <Route path="/login" element={<LoginPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
 export default App;
+
