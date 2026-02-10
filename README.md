@@ -1,4 +1,4 @@
-# 📈 Paper Trading Simulator
+# 📈 Paper Trading 
 
 A personal full-stack project that simulates stock trading with virtual cash using real market data.
 Built to practice full-stack engineering, auth, and portfolio/ordering logic.
