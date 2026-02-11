@@ -11,7 +11,7 @@ import { Link } from "react-router-dom";
 import { Field, FieldGroup, FieldLabel, FieldSet } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import AuthShell from "@/components/auth/AuthShell";
+import AuthShell from "@/components/features/auth/AuthShell";
 import { Eye, EyeClosed } from "lucide-react";
 
 export default function LoginPage() {
@@ -39,12 +39,12 @@ export default function LoginPage() {
   };
 
   // HANDLERS
- const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  await handleAuthentication(async () => {
-    await signInWithEmailAndPassword(auth, email, password);
-  });
-};
+  const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await handleAuthentication(async () => {
+      await signInWithEmailAndPassword(auth, email, password);
+    });
+  };
 
   const signInWithGoogle = async () => {
     await handleAuthentication(async () => {

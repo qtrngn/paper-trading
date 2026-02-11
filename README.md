@@ -36,7 +36,7 @@ A “paper trading” environment where users can:
 - Frontend: React + Vite
 - Backend: Node.js + Express
 - Auth: Firebase Authentication
-- Data: Firestore
+- Data: FireStore
 - Market data: Alpaca 
 
 ---
