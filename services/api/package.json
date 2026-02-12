@@ -1,0 +1,13 @@
+{
+  "name": "paper-trading-api",
+  "private": true,
+  "type": "commonjs",
+  "engines": { "node": "22.x" },
+  "dependencies": {
+    "firebase-admin": "^13.6.0",
+    "mongodb": "^6.19.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
