@@ -55,7 +55,8 @@ export default function RegisterPage() {
       setRegistering(false);
     }
   };
-  // FORM LAYOUT
+  
+  // UI RENDERING
   return (
     <AuthShell title="Register" subtitle="Create an account with us">
       <form onSubmit={onSubmit}>

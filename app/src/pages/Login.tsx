@@ -38,7 +38,7 @@ export default function LoginPage() {
     }
   };
 
-  // HANDLERS
+    // HANDLERS
   const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     await handleAuthentication(async () => {
@@ -52,6 +52,7 @@ export default function LoginPage() {
       await signInWithPopup(auth, provider);
     });
   };
+
 
   // UI RENDERING
   return (

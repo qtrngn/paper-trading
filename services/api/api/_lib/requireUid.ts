@@ -10,3 +10,4 @@ export async function requireUid(req:any): Promise<string> {
     const decoded = await admin.auth().verifyIdToken(token);
     return decoded.uid;  
 }
+
