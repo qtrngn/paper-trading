@@ -110,7 +110,6 @@ export default function LoginPage() {
 
             {/* Sign in button */}
             <Button
-              variant="default"
               type="submit"
               disabled={authenticating}
               className="w-full"
@@ -138,3 +137,5 @@ export default function LoginPage() {
     </AuthShell>
   );
 }
+
+
