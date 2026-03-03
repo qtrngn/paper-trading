@@ -28,15 +28,16 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     const refreshAccount = async () => {
         if (!user) return;
         setError(null);
-        setLoading(true);
         try {
             // TODO: fetch account using getAccount(idToken)
+            setLoading(true);
             const idToken = await user.getIdToken();
             const result = await getAccount(idToken);
             setAccount(result);
            
         } catch {
             setAccount(null); 
+            
             setError("Failed to refresh account")
         } finally {
             setLoading(false);
