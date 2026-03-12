@@ -9,13 +9,12 @@ import { SearchIcon } from "lucide-react"
 import type { SyntheticEvent } from "react";
 
 type SearchBarProps = {
-    loading: boolean;
     value: string;
     onChange(value: string): void;
     onSubmit(): void;
 }
 
-export default function SearchBar({ loading, value, onChange, onSubmit }: SearchBarProps) {
+export default function SearchBar({ value, onChange, onSubmit }: SearchBarProps) {
     // HANDLES  
     const handleSubmit = (e: SyntheticEvent) => {
         e.preventDefault();
@@ -31,13 +30,12 @@ export default function SearchBar({ loading, value, onChange, onSubmit }: Search
                         id="inline-start-input"
                         placeholder="Search..."
                         value={value}
-                        disabled={loading}
                         onChange={(e) => onChange(e.target.value)}
                     />
                     <InputGroupAddon align="inline-start">
                         <InputGroupButton
                             type="submit"
-                            disabled={loading || value.trim().length === 0}>
+                            disabled={value.trim().length === 0}>
                             <SearchIcon className="text-muted-foreground" />
                         </InputGroupButton>
                     </InputGroupAddon>

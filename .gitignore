@@ -32,3 +32,4 @@ app/dist/
 app/.env.local
 services/api/.env.local
 .vercel
+.env*.local

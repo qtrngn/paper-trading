@@ -4,7 +4,6 @@ export function useSymbolSearch() {
     // STATES
     const [query, setQuery] = useState("");
     const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
-    const [loading, setLoading] = useState(false);
 
     const submit = () => {
 
@@ -14,7 +13,8 @@ export function useSymbolSearch() {
             return;
         }
         setSelectedSymbol(symbol);
+      
     }
 
-    return { query, setQuery, selectedSymbol, loading, submit}
+    return { query, setQuery, selectedSymbol, submit}
 }

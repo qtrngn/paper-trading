@@ -16,14 +16,22 @@ import { Eye, EyeClosed } from "lucide-react";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+
   // STATES
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  })
   const [showPassword, setShowPassword] = useState(false);
   const [authenticating, setAuthenticating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // HELPERS
+  // HANDLERS
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
   const handleAuthentication = async (authFunction: () => Promise<void>) => {
     setError(null);
     setAuthenticating(true);
@@ -36,13 +44,13 @@ export default function LoginPage() {
     } finally {
       setAuthenticating(false);
     }
-  };
+  }; 
 
-    // HANDLERS
+
   const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     await handleAuthentication(async () => {
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
     });
   };
 
@@ -68,8 +76,9 @@ export default function LoginPage() {
               <Input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </Field>
@@ -81,8 +90,9 @@ export default function LoginPage() {
                 <Input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
                   className="pr-10"
                   required
                 />

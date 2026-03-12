@@ -6,8 +6,15 @@ import { requireUid } from "../_lib/requireUid";
     // METHOD GUARD
     if (req.method !== "GET") {
         return res.status(405).json({error: "Method is not allowed"})
+    } 
+    let uid: string;
+    try {
+        uid = await requireUid(req);
+    } catch (err) {
+        const message = err instanceof Error ? err.message : "unauthorize";
+        return res.status(401).json({error: "unauthorized", message})
     }
-   await requireUid(req);
+  
 
    // SYMBOL VALIDATION
    const raw = req.query.symbol
@@ -26,7 +33,7 @@ import { requireUid } from "../_lib/requireUid";
 
     // ALPACA API CALL
     const baseUrl = process.env.ALPACA_BASE_URL;
-    const url = new URL(`${baseUrl}/stocks/${symbol}/quotes/latest?feed=iex`)
+    const url = new URL(`${baseUrl}/stocks/${encodeURIComponent(symbol)}/quotes/latest?feed=iex`)
 
     const headers: Record<string, string> = {
         "APCA-API-KEY-ID": keyId,
@@ -51,7 +58,7 @@ import { requireUid } from "../_lib/requireUid";
         const message = error instanceof Error ? error.message : "unknown_error";
         return res.status(502).json({error: "Alpaca_quote_failed", message})
      }
-    
+     
 
  } 
 

@@ -10,21 +10,33 @@ import { Button } from "@/components/ui/button";
 import AuthShell from "@/components/features/auth/AuthShell";
 
 export default function RegisterPage() {
-  // STATES
+
   const navigate = useNavigate();
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
+  // STATES
+  const [formData, setFormData] = useState({
+    firstName:"",
+    lastName:"",
+    email:"",
+    password:"",
+    confirmPassword:"",
+  })
   const [registering, setRegistering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name as keyof typeof prevData]: value,
+    }))
+  }
 
   const onSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError(null);
 
-    if (password != confirmPassword) {
+    if (formData.password != formData.confirmPassword) {
       setError("Passwords are not matching.");
       return;
     }
@@ -34,15 +46,15 @@ export default function RegisterPage() {
     try {
       const credential = await createUserWithEmailAndPassword(
         auth,
-        email,
-        password,
+        formData.email,
+        formData.password,
       );
       const user = credential.user;
 
       await setDoc(doc(db, "users", user.uid), {
         uid: user.uid,
-        firstName: firstName.trim(),
-        lastName: lastName.trim(),
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
         email: user.email,
         createdAt: serverTimestamp(),
       });
@@ -67,10 +79,11 @@ export default function RegisterPage() {
               <FieldLabel htmlFor="firstName">First Name</FieldLabel>
               <Input
                 id="firstName"
+                name="firstName"
                 type="text"
                 placeholder="John"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
+                value={formData.firstName}
+                onChange={handleChange}
                 required
               />
             </Field>
@@ -80,10 +93,11 @@ export default function RegisterPage() {
               <FieldLabel htmlFor="lastName">Last Name</FieldLabel>
               <Input
                 id="lastName"
+                name="lastName"
                 type="text"
                 placeholder="Doe"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
+                value={formData.lastName}
+                onChange={handleChange}
                 required
               />
             </Field>
@@ -95,8 +109,8 @@ export default function RegisterPage() {
                 id="email"
                 type="email"
                 placeholder="john@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </Field>
@@ -108,8 +122,8 @@ export default function RegisterPage() {
                 id="password"
                 type="password"
                 placeholder="********"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={formData.password}
+                onChange={handleChange}
                 required
                 minLength={8}
               />
@@ -123,8 +137,8 @@ export default function RegisterPage() {
               <Input
                 id="confirmPassword"
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                value={formData.confirmPassword}
+                onChange={handleChange}
                 required
                 minLength={8}
               />
