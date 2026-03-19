@@ -28,7 +28,7 @@ export type Position ={
     unrealizedPlPct?: number;
 }
 
-export type Quote = {
+export type QuoteView = {
     symbol: string;
     last: number;
     change?: number;

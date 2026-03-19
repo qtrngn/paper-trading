@@ -1,8 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
-import { auth } from '@/lib/firebase';
+import { auth } from "@/lib/firebase";
+import type { Quote } from "@/features/market/types";
+import { getQuote } from "@/features/market/api";
+
 
 export function useStockQuote(symbol: string | null) {
-    const [quote, setQuote] = useState<unknown | null>(null);
+    const [quote, setQuote] = useState<Quote | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -19,20 +22,9 @@ export function useStockQuote(symbol: string | null) {
 
         try {
             const token = await user.getIdToken();
-            const encodedSymbol = encodeURIComponent(nextSymbol);
-            const requestUrl = `/api/market/quote?symbol=${encodedSymbol}`;
-            const res = await fetch(requestUrl, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!res.ok) {
-                const message = `Request failed (${res.status})`;
-                setQuote(null);
-                setError(message);
-                return;
-            }
-            const data = await res.json();
+            const data = await getQuote(token, nextSymbol);
             setQuote(data);
+            
         } catch {
             setQuote(null);
             setError("Failed to fetch data")

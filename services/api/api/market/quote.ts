@@ -29,7 +29,7 @@ import { getSingleQueryParam } from "../_lib/query";
     // ALPACA API CALL
     try {
         const baseUrl = getAlpacaBaseUrl();
-        const url = new URL(`/stocks/${encodeURIComponent(symbol)}/quotes/latest`, baseUrl);
+        const url = new URL(`stocks/${encodeURIComponent(symbol)}/quotes/latest`, baseUrl);
         url.search = new URLSearchParams({ feed: "iex" }).toString();
         
         const headers = getAlpacaHeaders();

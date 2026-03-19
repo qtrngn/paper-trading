@@ -56,7 +56,7 @@ type AlpacaBar = {
     // ALPACA API CALL
     try {
       const baseUrl = getAlpacaBaseUrl();
-      const url = new URL("/stocks/bars", baseUrl);
+      const url = new URL("stocks/bars", baseUrl);
   
       url.search = new URLSearchParams({
         symbols: symbol,

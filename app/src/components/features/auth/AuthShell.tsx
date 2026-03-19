@@ -1,10 +1,10 @@
-type Props = {
+type AuthProps = {
   title: string;
   subtitle: string;
   children: React.ReactNode;
 };
 
-export default function AuthShell({ title, subtitle, children }: Props) {
+export default function AuthShell({ title, subtitle, children }: AuthProps) {
   return (
     <div className="min-h-screen w-screen grid grid-cols-1 lg:grid-cols-[2fr_1fr]">
       <aside
