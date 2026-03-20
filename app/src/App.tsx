@@ -2,7 +2,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import AuthProvider from '@/providers/AuthProvider';
 import LoginPage from '@/pages/Login';
 import RegisterPage from '@/pages/Register';
-import HomePage from '@/pages/Home';
+import Dashboard from '@/pages/Dashboard';
 import AuthRoute from '@/router/AuthRoute';
 import '@/lib/firebase';
 
@@ -12,7 +12,7 @@ const App = () => {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<AuthRoute><HomePage /></AuthRoute>} />
+          <Route path="/" element={<AuthRoute><Dashboard /></AuthRoute>} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
         </Routes>

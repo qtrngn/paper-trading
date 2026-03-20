@@ -6,7 +6,6 @@ export function useSymbolSearch() {
     const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
     const submit = () => {
-
         const symbol = query.trim().toUpperCase();
 
         if (!symbol) {

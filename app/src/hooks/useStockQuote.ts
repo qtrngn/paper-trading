@@ -1,49 +1,42 @@
 import { useState, useEffect, useCallback } from "react";
-import { auth } from "@/lib/firebase";
+import { getCurrentUserToken } from "@/lib/auth"; 
 import type { Quote } from "@/features/market/types";
 import { getQuote } from "@/features/market/api";
 
 
 export function useStockQuote(symbol: string | null) {
     const [quote, setQuote] = useState<Quote | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
+    const [quoteLoading, setQuoteLoading] = useState(false);
+    const [quoteError, setQuoteError] = useState<string | null>(null);
 
     const fetchQuote = useCallback(async (nextSymbol: string) => {
-        setLoading(true);
-        setError(null);
-
-        const user = auth.currentUser;
-        if (!user) {
-            setError("User not signed in");
-            setLoading(false);
-            return;
-        }
+        setQuoteLoading(true);
+        setQuoteError(null);
 
         try {
-            const token = await user.getIdToken();
+            const token = await getCurrentUserToken();
             const data = await getQuote(token, nextSymbol);
             setQuote(data);
             
         } catch {
             setQuote(null);
-            setError("Failed to fetch data")
+            setQuoteError("Failed to fetch data")
 
         } finally {
-            setLoading(false)
+            setQuoteLoading(false)
         }
     }, []);
 
     useEffect(() => {
         if (!symbol) {
             setQuote(null);
-            setError(null);
-            setLoading(false);
+            setQuoteError(null);
+            setQuoteLoading(false);
             return;
         }
         fetchQuote(symbol);
     },[symbol, fetchQuote])
 
 
-    return { quote, loading, error }
+    return { quote, quoteLoading, quoteError }
 } 

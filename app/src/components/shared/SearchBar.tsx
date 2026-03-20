@@ -4,7 +4,7 @@ import {
     InputGroupButton,
     InputGroupInput,
 } from "@/components/ui/input-group";
-import { Field, FieldDescription, FieldLabel } from "@/components/ui/field"
+import { Field } from "@/components/ui/field"
 import { SearchIcon } from "lucide-react"
 import type { SyntheticEvent } from "react";
 
@@ -24,7 +24,6 @@ export default function SearchBar({ value, onChange, onSubmit }: SearchBarProps)
     return (
         <form onSubmit={handleSubmit}>
             <Field className="max-w-sm">
-                <FieldLabel htmlFor="inline-start-input">Input</FieldLabel>
                 <InputGroup>
                     <InputGroupInput
                         id="inline-start-input"
@@ -40,7 +39,6 @@ export default function SearchBar({ value, onChange, onSubmit }: SearchBarProps)
                         </InputGroupButton>
                     </InputGroupAddon>
                 </InputGroup>
-                <FieldDescription>Icon positioned at the start.</FieldDescription>
             </Field>
         </form>
     );
