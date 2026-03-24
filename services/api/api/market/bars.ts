@@ -22,12 +22,21 @@ type AlpacaBar = {
   
   export default async function handler(req: VercelRequest, res: VercelResponse) {
      // METHOD GUARD
+    // 1. Check if this is "GET" request
+    // 2. If not, reject with 405
+    // 3. If yes, start request/auth
+    // 4. Run required(uid) to verify authentication 
+    // 5. If auth fails, return 401 unauthorized
     if (req.method !== "GET") {
       return res.status(405).json({ error: "Method is not allowed" });
     }
-  
+    const requestStartedAt = Date.now();
+    
+    const authStartedAt = Date.now();
+
     try {
       await requireUid(req);
+      console.log("[bars] authMs =", Date.now() - authStartedAt);
     } catch (err) {
       const message = err instanceof Error ? err.message : "unauthorized";
       return res.status(401).json({ error: "unauthorized", message });
@@ -68,12 +77,18 @@ type AlpacaBar = {
       }).toString();
   
       const headers = getAlpacaHeaders();
+
+      const alpacaStartedAt = Date.now();
       const data = await fetchAlpacaJson(url, headers);
+      console.log("[bars] alpacaMs =", Date.now() - alpacaStartedAt);
   
       const bars: AlpacaBar[] = data.bars?.[symbol] ?? [];
   
       res.setHeader("Cache-Control", "no-store");
   
+
+      console.log("[bars] totalMs =", Date.now() - requestStartedAt, { symbol, range, timeframe });
+
       return res.status(200).json({
         symbol,
         range,
@@ -85,5 +100,7 @@ type AlpacaBar = {
       return res.status(502).json({ error: "Alpaca_bars_failed", message });
     }
   }
+
+  
 
   

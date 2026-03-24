@@ -86,6 +86,7 @@ export default function BarsChart({ bars, symbol, loading, error, range, onRange
   const chartData = bars.map((bar) => ({
     time: bar.t,
     close: bar.c,
+    volume: bar.v
   }));
 
   const summary = getChartSummary(bars);

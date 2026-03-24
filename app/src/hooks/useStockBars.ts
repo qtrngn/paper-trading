@@ -1,41 +1,29 @@
-import { useState, useEffect, useCallback } from "react";
-import type { Bar } from "@/features/market/types";
+import { useQuery } from "@tanstack/react-query";
 import { getBars } from "@/features/market/api";
 import { getCurrentUserToken } from "@/lib/auth";
 
 export function useStockBars(symbol: string | null, range: string) {
-  const [bars, setBars] = useState<Bar[]>([]);
-  const [barsLoading, setBarsLoading] = useState(false);
-  const [barsError, setBarsError] = useState<string | null>(null);
 
-  const fetchBars = useCallback(async (nextSymbol: string, nextRange: string) => {
-    setBarsLoading(true);
-    setBarsError(null);
+  const queryKey = ["bars", symbol, range];
 
-    try {
+  const barsQuery = useQuery ({
+    queryKey: queryKey,
+    queryFn: async () => {
+      if (!symbol) {
+        return [];
+      }
       const token = await getCurrentUserToken();
+      return getBars(token, symbol, range)
+    },
+    enabled: !!symbol,
+  })
 
-      const data = await getBars(token, nextSymbol, nextRange);
 
-      setBars(data);
-    } catch {
-      setBars([]);
-      setBarsError('Failed to load bars');
-    } finally {
-      setBarsLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    if (!symbol || !range) {
-      setBars([]);
-      setBarsError(null);
-      setBarsLoading(false);
-      return;
-    }
-
-    fetchBars(symbol, range);
-  }, [symbol, range, fetchBars]);
-
-  return { bars, barsLoading, barsError };
+  return { 
+    bars: barsQuery.data ?? [],
+    barsLoading: barsQuery.isLoading,
+    barsError: barsQuery.error ? 'Failed to load bars' : null,
+   };
 }
+
+ 

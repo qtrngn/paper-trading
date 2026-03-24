@@ -3,7 +3,6 @@ import { useState } from "react";
 export function useSymbolSearch() {
     // STATES
     const [query, setQuery] = useState("");
-    const [selectedSymbol, setSelectedSymbol] = useState<string | null>(null);
 
     const submit = () => {
         const symbol = query.trim().toUpperCase();
@@ -11,9 +10,9 @@ export function useSymbolSearch() {
         if (!symbol) {
             return;
         }
-        setSelectedSymbol(symbol);
-      
+        return symbol;
+
     }
 
-    return { query, setQuery, selectedSymbol, submit}
+    return { query, setQuery, submit }
 }
