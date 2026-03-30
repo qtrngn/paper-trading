@@ -1,6 +1,7 @@
 import {getAdmin} from './firebaseAdmin';
+import { VercelRequest } from '@vercel/node';
 
-export async function requireUid(req:any): Promise<string> {
+export async function requireUid(req:VercelRequest): Promise<string> {
     const header = req.headers.authorization || "";
     const match = header.match(/^Bearer (.+)$/);
     if (!match) throw new Error("Missing authorization token")

@@ -1,5 +1,4 @@
 import { useQuery } from "@tanstack/react-query";
-import { getCurrentUserToken } from "@/lib/auth"; 
 import { getQuote } from "@/features/market/api";
 
 
@@ -13,8 +12,7 @@ export function useStockQuote(symbol: string | null) {
             if (!symbol) {
                 return null;
             }
-            const token = await getCurrentUserToken();
-            return getQuote(token, symbol);
+            return getQuote(symbol);
         },
         enabled: !!symbol,
     })

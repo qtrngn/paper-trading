@@ -12,14 +12,13 @@ export function getAlpacaHeaders(): Record<string, string> {
   };
 }
 
-export async function fetchAlpacaJson(url: URL, headers: Record<string, string>): Promise<any> {
+export async function fetchAlpacaJson<T>(url: URL, headers: Record<string, string>): Promise<T> {
   const response = await fetch(url, { headers })
   if (!response.ok) {
     const body = await response.text();
     throw new Error(`Alpaca ${response.status}: ${body.slice(0, 100)}`)
   }
-  return await response.json()
-
+  return (await response.json()) as T;
 }
 
 export function getAlpacaBaseUrl(): string {
@@ -29,4 +28,4 @@ export function getAlpacaBaseUrl(): string {
     throw new Error("Missing Alpaca base URL");
   }
   return baseUrl;
-}
+} 

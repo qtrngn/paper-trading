@@ -16,3 +16,7 @@ export type Quote = {
     t: string;      // timestamp
 }
 
+export type SearchSuggestions = {
+    symbol: string;
+    name: string;
+}

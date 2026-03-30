@@ -37,7 +37,7 @@ export default function LoginPage() {
     setAuthenticating(true);
     try {
       await authFunction();
-      navigate("/dashboard");
+      navigate("/");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Login failed";
       setError(message);

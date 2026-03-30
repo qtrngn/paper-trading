@@ -5,3 +5,4 @@ export function getSingleQueryParam(raw?: string | string[]): string {
     }
     return raw ?? "";
 }
+

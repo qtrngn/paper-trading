@@ -1,6 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
 import { getBars } from "@/features/market/api";
-import { getCurrentUserToken } from "@/lib/auth";
 
 export function useStockBars(symbol: string | null, range: string) {
 
@@ -12,8 +11,7 @@ export function useStockBars(symbol: string | null, range: string) {
       if (!symbol) {
         return [];
       }
-      const token = await getCurrentUserToken();
-      return getBars(token, symbol, range)
+      return getBars(symbol, range)
     },
     enabled: !!symbol,
   })

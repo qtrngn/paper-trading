@@ -33,3 +33,7 @@ app/.env.local
 services/api/.env.local
 .vercel
 .env*.local
+
+.prettierrc
+
+
