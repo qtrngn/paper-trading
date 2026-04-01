@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useStockSnapshot } from "@/hooks/useStockSnapshot";
+import { formatPrice, formatVolume } from "@/lib/formatters";
 
 type OverviewField = {
   label: string;
@@ -7,47 +9,18 @@ type OverviewField = {
 
 type OverviewSectionProps = {
   symbol: string | null;
-  marketDetails?: OverviewField[][];
   dividends?: OverviewField[];
   financials?: OverviewField[];
   description?: string | null;
 };
 
-const defaultMarketDetails: OverviewField[][] = [
-  [
-    { label: "Open" },
-    { label: "High" },
-    { label: "52 week high" },
-  ],
-  [
-    { label: "Bid" },
-    { label: "Low" },
-    { label: "52 week low" },
-  ],
-  [
-    { label: "Ask" },
-    { label: "Volume" },
-    { label: "Exchange" },
-  ],
-  [
-    { label: "Last sale" },
-    { label: "Average volume" },
-    { label: "Margin requirement" },
-  ],
-];
 
-const defaultDividends: OverviewField[] = [
-  { label: "Frequency" },
-  { label: "12-month yield" },
-  { label: "Ex-dividend date" },
-];
+const defaultDividends: OverviewField[] = [{ label: "Frequency" }, { label: "12-month yield" }, { label: "Ex-dividend date" }];
 
-const defaultFinancials: OverviewField[] = [
-  { label: "Market cap" },
-  { label: "Shares outstanding" },
-  { label: "P/E ratio" },
-];
+const defaultFinancials: OverviewField[] = [{ label: "Market cap" }, { label: "Shares outstanding" }, { label: "P/E ratio" }];
 
+
+// STYLE COMPONENTS
 function SectionTitle({ children }: { children: ReactNode }) {
   return <h2 className="text-3xl font-bold text-white">{children}</h2>;
 }
@@ -87,16 +60,36 @@ function SimpleGrid({ items }: { items: OverviewField[] }) {
 
 export default function OverviewSection({
   symbol,
-  marketDetails = defaultMarketDetails,
   dividends = defaultDividends,
   financials = defaultFinancials,
   description,
 }: OverviewSectionProps) {
+
+  const { snapshot } = useStockSnapshot(symbol);
+
+const resolvedMarketDetails: OverviewField[][] = [
+  [
+    { label: "Open", value: snapshot?.open != null ? formatPrice(snapshot.open) : undefined },
+    { label: "High", value: snapshot?.high != null ? formatPrice(snapshot.high) : undefined },
+  ],
+  [
+    { label: "Bid", value: snapshot?.bid != null ? formatPrice(snapshot.bid) : undefined },
+    { label: "Low", value: snapshot?.low != null ? formatPrice(snapshot.low) : undefined },
+  ],
+  [
+    { label: "Ask", value: snapshot?.ask != null ? formatPrice(snapshot.ask) : undefined },
+    { label: "Volume", value: snapshot?.volume != null ? formatVolume(snapshot.volume) : undefined },
+  ],
+  [
+    { label: "Last sale", value: snapshot?.lastSale != null ? formatPrice(snapshot.lastSale) : undefined },
+  ],
+];
+
   return (
-    <div className="mt-10 space-y-12">
+    <div className="mt-10 space-y-12 font-bold">
       <section className="space-y-6">
         <SectionTitle>Market details</SectionTitle>
-        <MarketDetailsGrid columns={marketDetails} />
+        <MarketDetailsGrid columns={resolvedMarketDetails} />
       </section>
 
       <section className="space-y-6">
@@ -111,9 +104,7 @@ export default function OverviewSection({
 
       <section className="space-y-6">
         <SectionTitle>About {symbol ?? "Company"}</SectionTitle>
-        <p className="max-w-6xl text-base leading-8 text-zinc-300">
-          {description ?? "Company description will go here."}
-        </p>
+        <p className="max-w-6xl text-base leading-8 text-zinc-300">{description ?? "Company description will go here."}</p>
       </section>
     </div>
   );

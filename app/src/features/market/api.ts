@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { Quote, Bar, SearchSuggestions } from "./types";
+import type { Quote, Bar, SearchSuggestions, SnapshotResponse } from "./types";
 
 
 type GetQuoteResponse = {
@@ -45,3 +45,10 @@ export async function getSearchSuggestions(query: string, signal: AbortSignal): 
 }
 
 
+// API FOR SNAPSHOT
+export async function getSnapshot(symbol: string): Promise<SnapshotResponse> {
+    const response = await api.get<SnapshotResponse>("/api/market/snapshot", {
+        params: { symbol }
+    });
+    return response.data;
+}

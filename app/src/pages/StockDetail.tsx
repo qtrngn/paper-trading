@@ -1,7 +1,7 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useStockBars } from "@/hooks/useStockBars";
 import BarsChart from "@/components/shared/chart/BarsChart";
-import OverviewSection from "@/components/features/stock-detail/OverViewSection";
+import OverviewSection from "@/components/features/stock-detail/OverviewSection";
 
 export default function StockDetailPage() {
   // URL STATE

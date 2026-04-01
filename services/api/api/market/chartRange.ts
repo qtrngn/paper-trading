@@ -91,7 +91,7 @@ const RANGE_CONFIG = {
 
 } as const satisfies Record<string, RangeDefinition>;
 
-type ChartRange = keyof typeof RANGE_CONFIG;
+export type ChartRange = keyof typeof RANGE_CONFIG;
 
 
 export function normalizeRange (value: string) {

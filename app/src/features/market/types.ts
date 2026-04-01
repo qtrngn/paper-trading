@@ -20,3 +20,16 @@ export type SearchSuggestions = {
     symbol: string;
     name: string;
 }
+
+export type SnapshotResponse = {
+  symbol: string;
+  open: number | null;
+  high: number | null;
+  low: number | null;
+  volume: number | null;
+  bid: number | null;
+  ask: number | null;
+  lastSale: number | null;
+};
+
+

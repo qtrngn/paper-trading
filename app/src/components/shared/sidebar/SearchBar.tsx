@@ -87,7 +87,7 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
+    <CommandDialog open={open} onOpenChange={onOpenChange} showCloseButton={false} className="bg-black left-1/2 top-[25vh] -translate-x-1/2 translate-y-0">
       <CommandInput
         placeholder="Search symbol or company..."
         value={searchQuery}
@@ -96,9 +96,9 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
       />
 
       {isListOpen && (
-        <CommandList>
+        <CommandList className="text-white">
           {suggestionsLoading ? (
-            <div className="px-3 py-2 text-sm text-muted-foreground">
+            <div className="px-3 py-2 text-sm font-bold">
               Searching...
             </div>
           ) : suggestions.length === 0 ? (
@@ -112,7 +112,7 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
                   onSelect={() => handleSuggestionSelect(suggestion)}
                 >
                   <div className="flex min-w-0 flex-col">
-                    <span className="font-medium">{suggestion.symbol}</span>
+                    <span className="font-bold">{suggestion.symbol}</span>
                     <span className="truncate text-sm text-muted-foreground">
                       {suggestion.name}
                     </span>

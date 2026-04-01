@@ -2,30 +2,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { requireMethod } from "../_lib/requireMethod";
 import { requireUid } from "../_lib/requireUid";
 import { getSingleQueryParam } from "../_lib/query";
-import { getAlpacaBaseUrl, getAlpacaHeaders, fetchAlpacaJson } from "./alpaca";
-import {
-  getDateRangeFromLookback,
-  getRangeDefinition,
-  isChartRange,
-  normalizeRange,
-  toAlpacaTimeframe,
-} from "./chartRange";
 import { parseSymbol } from "./symbol";
-
-
-// TYPES
-type AlpacaBar = {
-  t: string;
-  o: number;
-  h: number;
-  l: number;
-  c: number;
-  v: number;
-};
-
-type AlpacaBarsResponse = {
-  bars: Record<string, AlpacaBar[]>;
-};
+import  { fetchAlpacaBars } from "./alpacaBars";
+import { normalizeRange, isChartRange } from "./chartRange";
 
 
 
@@ -55,34 +34,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: "Missing or invalid range" });
   }
 
-  const selectedRangeConfig = getRangeDefinition(range);
-  const timeframe = toAlpacaTimeframe(selectedRangeConfig.grouping);
-  const { start, end } = getDateRangeFromLookback(selectedRangeConfig.lookback);
-
   // ALPACA API CALL
-  try {
-    const baseUrl = getAlpacaBaseUrl();
-    const url = new URL("stocks/bars", baseUrl);
-
-    url.search = new URLSearchParams({
-      symbols: symbol,
-      timeframe,
-      start: start.toISOString(),
-      end: end.toISOString(),
-      feed: "iex",
-      sort: "asc",
-    }).toString();
-
-    const headers = getAlpacaHeaders();
-    const data = await fetchAlpacaJson<AlpacaBarsResponse>(url, headers);
-    const bars: AlpacaBar[] = data.bars?.[symbol] ?? [];
-
+   try {
+    const bars = await fetchAlpacaBars(symbol, range);
     res.setHeader("Cache-Control", "no-store");
 
     return res.status(200).json({
       symbol,
       range,
-      timeframe,
       bars,
     });
   } catch (error) {

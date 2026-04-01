@@ -8,4 +8,9 @@ export function formatPrice(value: number) {
   }
 
 
-  
+  export function formatVolume(value: number) {
+  return new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    maximumFractionDigits: 2,
+  }).format(value);
+}
