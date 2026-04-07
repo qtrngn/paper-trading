@@ -7,3 +7,5 @@ export function requireMethod(req: VercelRequest, res: VercelResponse, method: s
     }
     return true;
 }
+
+

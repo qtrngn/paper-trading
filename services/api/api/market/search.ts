@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { requireMethod } from "../_lib/requireMethod";
-import { requireUid } from "../_lib/requireUid";
-import { getSingleQueryParam } from "../_lib/query";
+import { requireMethod } from "../_lib/http/requireMethod";
+import { requireUid } from "../_lib/auth/requireUid";
+import { getSingleQueryParam } from "../_lib/http/query";
 import { parseSymbol } from "../market/symbol";
 import { fetchAlpacaBars } from "./alpacaBars";
 
@@ -95,20 +95,24 @@ async function searchMarketSuggestions(query: string): Promise<SearchSuggestion[
     return 0;
   }
 
-  const rankedSuggestions = suggestions.map((suggestion, index) => ({
-    suggestion,
-    score: getSuggestionScore(suggestion),
-    index,
-  })).sort((a, b) => {
+  const rankedSuggestions = suggestions
+    .map((suggestion, index) => ({
+      suggestion,
+      score: getSuggestionScore(suggestion),
+      index,
+    }))
+    .sort((a, b) => {
       if (b.score !== a.score) {
         return b.score - a.score;
       }
       return a.index - b.index;
-    }).map((entry) => entry.suggestion);
+    })
+    .map((entry) => entry.suggestion);
 
   const candidateSuggestions = rankedSuggestions.slice(0, 8);
 
-  const supportChecks = await Promise.all(candidateSuggestions.map(async (suggestion) => {
+  const supportChecks = await Promise.all(
+    candidateSuggestions.map(async (suggestion) => {
       const supported = await supportsChartData(suggestion.symbol);
       if (!supported) {
         return null;

@@ -1,4 +1,4 @@
-import {getAdmin} from './firebaseAdmin';
+import { getAdmin } from './firebaseAdmin';
 import { VercelRequest } from '@vercel/node';
 
 export async function requireUid(req:VercelRequest): Promise<string> {

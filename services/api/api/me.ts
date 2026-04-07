@@ -1,4 +1,4 @@
-import { requireUid } from "./_lib/requireUid";
+import { requireUid } from "./_lib/auth/requireUid";
 
 export default async function handler(req: any, res: any) {
   if (req.method === "OPTIONS") {

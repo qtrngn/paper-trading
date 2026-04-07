@@ -9,15 +9,8 @@ type OverviewField = {
 
 type OverviewSectionProps = {
   symbol: string | null;
-  dividends?: OverviewField[];
-  financials?: OverviewField[];
   description?: string | null;
 };
-
-
-const defaultDividends: OverviewField[] = [{ label: "Frequency" }, { label: "12-month yield" }, { label: "Ex-dividend date" }];
-
-const defaultFinancials: OverviewField[] = [{ label: "Market cap" }, { label: "Shares outstanding" }, { label: "P/E ratio" }];
 
 
 // STYLE COMPONENTS
@@ -48,20 +41,9 @@ function MarketDetailsGrid({ columns }: { columns: OverviewField[][] }) {
   );
 }
 
-function SimpleGrid({ items }: { items: OverviewField[] }) {
-  return (
-    <div className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
-      {items.map((item) => (
-        <FieldItem key={item.label} {...item} />
-      ))}
-    </div>
-  );
-}
 
 export default function OverviewSection({
   symbol,
-  dividends = defaultDividends,
-  financials = defaultFinancials,
   description,
 }: OverviewSectionProps) {
 
@@ -90,16 +72,6 @@ const resolvedMarketDetails: OverviewField[][] = [
       <section className="space-y-6">
         <SectionTitle>Market details</SectionTitle>
         <MarketDetailsGrid columns={resolvedMarketDetails} />
-      </section>
-
-      <section className="space-y-6">
-        <SectionTitle>Dividends</SectionTitle>
-        <SimpleGrid items={dividends} />
-      </section>
-
-      <section className="space-y-6">
-        <SectionTitle>Financials</SectionTitle>
-        <SimpleGrid items={financials} />
       </section>
 
       <section className="space-y-6">

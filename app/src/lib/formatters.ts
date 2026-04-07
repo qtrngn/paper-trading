@@ -14,3 +14,5 @@ export function formatPrice(value: number) {
     maximumFractionDigits: 2,
   }).format(value);
 }
+
+

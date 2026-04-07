@@ -1,12 +1,10 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { requireMethod } from "../_lib/requireMethod";
-import { requireUid } from "../_lib/requireUid";
-import { getSingleQueryParam } from "../_lib/query";
+import { requireMethod } from "../_lib/http/requireMethod";
+import { requireUid } from "../_lib/auth/requireUid";
+import { getSingleQueryParam } from "../_lib/http/query";
 import { parseSymbol } from "./symbol";
-import  { fetchAlpacaBars } from "./alpacaBars";
+import { fetchAlpacaBars } from "./alpacaBars";
 import { normalizeRange, isChartRange } from "./chartRange";
-
-
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // METHOD GUARD
@@ -35,7 +33,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   // ALPACA API CALL
-   try {
+  try {
     const bars = await fetchAlpacaBars(symbol, range);
     res.setHeader("Cache-Control", "no-store");
 
@@ -49,6 +47,3 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     return res.status(502).json({ error: "Alpaca_bars_failed", message });
   }
 }
-
-
-
