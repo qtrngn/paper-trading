@@ -1,4 +1,5 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
+import { ObjectId } from "mongodb";
 import { requireMethod } from "../_lib/http/requireMethod";
 import { requireUid } from "../_lib/auth/requireUid";
 import { getOrCreateAccount } from "../_lib/trading/account";
@@ -6,7 +7,9 @@ import { getStockSnapshot } from "../_lib/market/snapshot";
 import { executeOrder } from "../_lib/trading/orderExecution";
 import { getPositionBySymbol } from "../_lib/trading/position";
 import { parseSymbol } from "../market/symbol";
-
+import { buildOrderDoc } from "../_lib/trading/order";
+import { getDb } from "../_lib/db/mongo";
+import type { OrderDoc } from "../_lib/trading/order";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // METHOD GUARD
@@ -50,11 +53,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
   // LOAD ACCOUNT AND MARKET DATA
   try {
+    const db = await getDb();
+    const orders = db.collection<OrderDoc>("orders");
     const account = await getOrCreateAccount(uid);
     const snapshot = await getStockSnapshot(symbol);
-
     const existingPosition = await getPositionBySymbol(uid, symbol);
-
     const executionResult = executeOrder({
       side,
       orderType: type,
@@ -62,25 +65,34 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       limitPriceNumber,
       snapshot,
       account,
-      existingPosition
+      existingPosition,
     });
 
     if (!executionResult.ok) {
       return res.status(executionResult.statusCode).json({ error: executionResult.error });
     }
     const { executionPrice, orderValue, status } = executionResult;
+
+    const now = new Date();
+    const id = new ObjectId().toHexString();
+    const order = buildOrderDoc({
+      id,
+      uid,
+      symbol,
+      side,
+      qty: qtyNumber,
+      type,
+      limitPrice: type === "limit" ? limitPriceNumber : null,
+      status,
+      executionPrice,
+      now,
+    });
+
+    await orders.insertOne(order);
+
     return res.status(200).json({
       ok: true,
-      order: {
-        symbol,
-        side,
-        type,
-        qty: qtyNumber,
-        limitPrice: type === "limit" ? limitPriceNumber : null,
-        executionPrice,
-        orderValue,
-        status,
-      },
+      order,
     });
   } catch (err) {
     return res.status(502).json({ error: "Failed to load account or market data" });
