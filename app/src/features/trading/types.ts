@@ -2,22 +2,22 @@ export type OrderSide = "buy" | "sell";
 
 export type OrderType = "market" | "limit";
 
-export type OrderStatus = "pending" | "filled" | "canceled" | "rejected";
+export type OrderStatus = "pending" | "filled" | "cancelled" | "rejected";
 
 export type Order = {
-    id: string;
-    symbol: string;
-    side: OrderSide;
-    type: OrderType;
-    qty: number;
-    limitPrice?: number;
-    status: OrderStatus;
-    filledQty: number;
-    avgFilledPrice?: number;
-    rejectReason?: string;
-    createdAt: string;
-    updatedAt: string;
-}
+  id: string;
+  symbol: string;
+  side: OrderSide;
+  type: OrderType;
+  qty: number;
+  limitPrice: number | null;
+  status: OrderStatus;
+  submittedAt: string;
+  filledAt: string | null;
+  fillPrice: number | null;
+  createdAt: string;
+  updatedAt: string;
+};
 
 export type Position ={
     symbol: string;

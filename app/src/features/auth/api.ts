@@ -6,10 +6,8 @@ type GetAccountResponse = {
     account: Account
 };
 
-export async function getAccount (idToken: string): Promise<Account>  {
-    const response = await api.get<GetAccountResponse>("/api/me/account", {
-        headers: { Authorization: `Bearer ${idToken}`},
-    });
+export async function getAccount(): Promise<Account>  {
+    const response = await api.get<GetAccountResponse>("/api/account");
 
     const account = response.data.account; 
     if (!account) {

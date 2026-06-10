@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useStockSnapshot } from "@/hooks/useStockSnapshot";
 import { formatPrice, formatVolume } from "@/lib/formatters";
 
+
 type OverviewField = {
   label: string;
   value?: ReactNode;
@@ -11,7 +12,6 @@ type OverviewSectionProps = {
   symbol: string | null;
   description?: string | null;
 };
-
 
 // STYLE COMPONENTS
 function SectionTitle({ children }: { children: ReactNode }) {
@@ -41,31 +41,24 @@ function MarketDetailsGrid({ columns }: { columns: OverviewField[][] }) {
   );
 }
 
-
-export default function OverviewSection({
-  symbol,
-  description,
-}: OverviewSectionProps) {
-
+export default function OverviewSection({ symbol, description }: OverviewSectionProps) {
   const { snapshot } = useStockSnapshot(symbol);
 
-const resolvedMarketDetails: OverviewField[][] = [
-  [
-    { label: "Open", value: snapshot?.open != null ? formatPrice(snapshot.open) : undefined },
-    { label: "High", value: snapshot?.high != null ? formatPrice(snapshot.high) : undefined },
-  ],
-  [
-    { label: "Bid", value: snapshot?.bid != null ? formatPrice(snapshot.bid) : undefined },
-    { label: "Low", value: snapshot?.low != null ? formatPrice(snapshot.low) : undefined },
-  ],
-  [
-    { label: "Ask", value: snapshot?.ask != null ? formatPrice(snapshot.ask) : undefined },
-    { label: "Volume", value: snapshot?.volume != null ? formatVolume(snapshot.volume) : undefined },
-  ],
-  [
-    { label: "Last sale", value: snapshot?.lastSale != null ? formatPrice(snapshot.lastSale) : undefined },
-  ],
-];
+  const resolvedMarketDetails: OverviewField[][] = [
+    [
+      { label: "Open", value: snapshot?.open != null ? formatPrice(snapshot.open) : undefined },
+      { label: "High", value: snapshot?.high != null ? formatPrice(snapshot.high) : undefined },
+    ],
+    [
+      { label: "Bid", value: snapshot?.bid != null ? formatPrice(snapshot.bid) : undefined },
+      { label: "Low", value: snapshot?.low != null ? formatPrice(snapshot.low) : undefined },
+    ],
+    [
+      { label: "Ask", value: snapshot?.ask != null ? formatPrice(snapshot.ask) : undefined },
+      { label: "Volume", value: snapshot?.volume != null ? formatVolume(snapshot.volume) : undefined },
+    ],
+    [{ label: "Last sale", value: snapshot?.lastSale != null ? formatPrice(snapshot.lastSale) : undefined }],
+  ];
 
   return (
     <div className="mt-10 space-y-12 font-bold">

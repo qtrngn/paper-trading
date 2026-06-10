@@ -59,7 +59,7 @@ export default function SideBar({ onOpenSearch }: SideBarProps) {
   return (
     <div>
       <TooltipProvider delayDuration={100}>
-        <Sidebar collapsible="none" className="bg-zinc-900 pt-10">
+        <Sidebar collapsible="none" className=" pt-10">
           <SidebarHeader className="items-center px-0 py-4">
             <Tooltip>
               <NavLink

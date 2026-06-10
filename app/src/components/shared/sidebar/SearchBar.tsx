@@ -12,6 +12,7 @@ import { useDebouncedValue } from "@/hooks/useDebouncedValue";
 import { useSearchSuggestions } from "@/hooks/useSearchSuggestions";
 import type { SearchSuggestions } from "@/features/market/types";
 
+
 type SearchBarProps = {
   open: boolean;
   onOpenChange(open: boolean): void;
@@ -96,7 +97,7 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
       />
 
       {isListOpen && (
-        <CommandList className="text-white">
+        <CommandList className = "text-white">
           {suggestionsLoading ? (
             <div className="px-3 py-2 text-sm font-bold">
               Searching...

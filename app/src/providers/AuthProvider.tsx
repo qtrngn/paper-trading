@@ -31,8 +31,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         try {
             // TODO: fetch account using getAccount(idToken)
             setLoading(true);
-            const idToken = await user.getIdToken();
-            const result = await getAccount(idToken);
+            const result = await getAccount();
             setAccount(result);
            
         } catch {
@@ -64,8 +63,7 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         setUser(nextUser);
         setLoading(true);
         try {
-            const idToken = await nextUser.getIdToken();
-            const result = await getAccount(idToken);
+            const result = await getAccount();
             if (isStale()) return; 
             setAccount(result);
         } catch {

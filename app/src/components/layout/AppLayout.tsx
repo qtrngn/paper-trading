@@ -10,7 +10,7 @@ export default function AppLayout() {
   return (
     <SidebarProvider style={{ "--sidebar-width": "8rem" } as React.CSSProperties}>
       <SideBar onOpenSearch={() => setIsSearchOpen(true)} />
-      <main className="min-h-screen flex-1 bg-zinc-900 text-foreground pt-10">
+      <main className="min-h-screen flex-1 text-foreground bg-background pt-10">
         <Outlet />
       </main>
       <SearchBar open={isSearchOpen} onOpenChange={setIsSearchOpen} />
