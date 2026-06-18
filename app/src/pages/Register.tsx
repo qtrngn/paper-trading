@@ -107,6 +107,7 @@ export default function RegisterPage() {
               <FieldLabel htmlFor="email">Email</FieldLabel>
               <Input
                 id="email"
+                name="email"
                 type="email"
                 placeholder="john@example.com"
                 value={formData.email}
@@ -120,6 +121,7 @@ export default function RegisterPage() {
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input
                 id="password"
+                name="password"
                 type="password"
                 placeholder="********"
                 value={formData.password}
@@ -136,6 +138,7 @@ export default function RegisterPage() {
               </FieldLabel>
               <Input
                 id="confirmPassword"
+                name="confirmPassword"
                 type="password"
                 value={formData.confirmPassword}
                 onChange={handleChange}

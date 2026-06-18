@@ -24,11 +24,11 @@ type ExecuteOrderResult = | { ok: false; statusCode: 400; error: string } | {
 export function executeOrder({ side, orderType, qtyNumber, limitPriceNumber, snapshot, account, existingPosition }:ExecuteOrderInput): ExecuteOrderResult {
 
     // MARKET GUARDS
-  if (side === "buy" && snapshot.ask === null) {
+  if (side === "buy" && (snapshot.ask === null || snapshot.ask === 0 || !Number.isFinite(snapshot.ask))) {
     return { ok: false, statusCode: 400, error: "No available ask price for purchase" };
   }
 
-  if (side === "sell" && snapshot.bid === null) {
+  if (side === "sell" && (snapshot.bid === null || snapshot.bid === 0 || !Number.isFinite(snapshot.bid))) {
     return { ok: false, statusCode: 400, error: "No available bid price for sale" };
   }
 

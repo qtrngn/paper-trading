@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
-import { useStockSnapshot } from "@/hooks/useStockSnapshot";
 import { formatPrice, formatVolume } from "@/lib/formatters";
+import type { SnapshotResponse } from "@/features/market/types";
 
 
 type OverviewField = {
@@ -11,18 +11,19 @@ type OverviewField = {
 type OverviewSectionProps = {
   symbol: string | null;
   description?: string | null;
+  snapshot: SnapshotResponse | null;
 };
 
 // STYLE COMPONENTS
 function SectionTitle({ children }: { children: ReactNode }) {
-  return <h2 className="text-3xl font-bold text-white">{children}</h2>;
+  return <h2 className="section-title">{children}</h2>;
 }
 
 function FieldItem({ label, value }: OverviewField) {
   return (
     <div className="space-y-1">
-      <p className="text-sm font-medium text-zinc-400">{label}</p>
-      <p className="text-lg text-white">{value ?? "--"}</p>
+      <p className="body-text-sm font-medium">{label}</p>
+      <p className="value-text">{value ?? "--"}</p>
     </div>
   );
 }
@@ -41,8 +42,7 @@ function MarketDetailsGrid({ columns }: { columns: OverviewField[][] }) {
   );
 }
 
-export default function OverviewSection({ symbol, description }: OverviewSectionProps) {
-  const { snapshot } = useStockSnapshot(symbol);
+export default function OverviewSection({ symbol, description, snapshot }: OverviewSectionProps) {
 
   const resolvedMarketDetails: OverviewField[][] = [
     [

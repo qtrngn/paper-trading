@@ -1,5 +1,6 @@
 import { useParams, useSearchParams } from "react-router-dom";
 import { useStockBars } from "@/hooks/useStockBars";
+import { useStockSnapshot } from "@/hooks/useStockSnapshot";
 import BarsChart from "@/components/shared/chart/BarsChart";
 import OverviewSection from "@/components/features/stock-detail/OverviewSection";
 import TradeTicket from "@/components/features/stock-detail/TradeTicket";
@@ -19,6 +20,7 @@ export default function StockDetailPage() {
 
   // CHART STATE
   const { bars, barsLoading, barsError } = useStockBars(selectedSymbol, range);
+  const {snapshot} = useStockSnapshot(selectedSymbol);
 
    return (
     <main className="p-4 shadow-sm sm:p-5">
@@ -34,12 +36,17 @@ export default function StockDetailPage() {
 
         {selectedSymbol ? (
           <aside className="xl:sticky xl:top-24">
-            <TradeTicket symbol={selectedSymbol} />
+            <TradeTicket 
+            key={selectedSymbol}
+            symbol={selectedSymbol} 
+            bidPrice={snapshot?.bid ?? null}
+            askPrice={snapshot?.ask ?? null}
+            />
           </aside>
         ) : null}
       </section>
 
-      <OverviewSection symbol={selectedSymbol} />
+      <OverviewSection symbol={selectedSymbol} snapshot={snapshot}/>
     </main>
   );
 }

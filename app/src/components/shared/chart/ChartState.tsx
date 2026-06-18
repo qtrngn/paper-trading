@@ -40,7 +40,7 @@ import {
         </CardHeader>
   
         <CardContent className="px-2 sm:p-6">
-          <div className="flex h-[250px] w-full items-center justify-center rounded-xl border border-dashed border-border text-sm text-muted-foreground">
+          <div className="flex h-62.5 w-full items-center justify-center rounded-xl border border-dashed border-border text-sm text-muted-foreground">
             {message}
           </div>
         </CardContent>

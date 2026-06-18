@@ -37,7 +37,7 @@ A “paper trading” environment where users can:
 - Backend: Node.js + Express
 - Auth: Firebase Authentication
 - Data: FireStore
-- Market data: Alpaca 
+- Market data: Alpaca (free plan -> feed:iex -> 1 individual US stock exchange only)
 
 ---
 

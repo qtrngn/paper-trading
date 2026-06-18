@@ -15,17 +15,17 @@ export default function AuthShell({ title, subtitle, children }: AuthProps) {
         <div className="absolute inset-0 bg-black/60 pointer-events-none" />
 
         {/* Logo */}
-        <div className="absolute left-8 top-8 text-4xl font-semibold font-primary text-white tracking-wide">
+        <div className="absolute left-8 top-8 display-title">
           Trading Center
         </div>
 
         <div className="relative z-10 h-full flex flex-col justify-center px-16 capitalize">
           {/* Header */}
-          <h1 className="mt-3 font-semibold text-slate-100 [text-shadow:3px_6px_5px_#275382] tracking-wider">
+          <h1 className="mt-3 page-title [text-shadow:3px_6px_5px_#275382] tracking-wider">
             TRADE WITH VIRTUAL CASH
           </h1>
           {/* Sub-header */}
-          <p className="mt-5 max-w-md text-md font-md text-white">
+          <p className="mt-5 max-w-md body-text text-white">
             No real money was harmed in the making of this portfolio.
           </p>
         </div>
@@ -34,8 +34,8 @@ export default function AuthShell({ title, subtitle, children }: AuthProps) {
       {/* Main section */}
       <main className="relative flex items-center justify-center bg-zinc-900 px-6 py-12">
         <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur">
-          <h2 className="text-2xl font-semibold text-white">{title}</h2>
-          {subtitle && <p className="mt-1 text-sm text-white/60">{subtitle}</p>}
+          <h2 className="card-title-lg">{title}</h2>
+          {subtitle && <p className="label-text mt-2">{subtitle}</p>}
           <div className="mt-6">{children}</div>
         </div>
       </main>
