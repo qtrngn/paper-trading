@@ -24,8 +24,10 @@ dist-ssr
 *.sln
 *.sw?
 
+
 # env
 .env.local
+.env
 
 app/node_modules/
 app/dist/
@@ -36,4 +38,4 @@ services/api/.env.local
 
 .prettierrc
 
-
+.vscode
