@@ -39,3 +39,4 @@ services/api/.env.local
 .prettierrc
 
 .vscode
+AGENTS.md

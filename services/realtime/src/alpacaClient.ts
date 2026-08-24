@@ -1,12 +1,17 @@
 import { WebSocket } from 'ws';
 import type { RawData } from 'ws';
-import type { QuoteUpdate } from './_types.js'; 
+import type { QuoteUpdate, TradeUpdate } from './_types.js';
 
 const alpacaSocketUrl = 'wss://stream.data.alpaca.markets/v2/iex';
 let alpacaSocket: WebSocket | undefined;
+type RealtimeHandlers = {
+  onQuote: (quote: QuoteUpdate) => void;
+  onTrade: (trade: TradeUpdate) => void;
+};
+
 
 // CONNECT TO ALPACA / AUTHENTICATION
-export async function connectToAlpaca() {
+export async function connectToAlpaca({onQuote, onTrade}: RealtimeHandlers): Promise<void> {
   const keyId = process.env.ALPACA_API_KEY;
   const secret = process.env.ALPACA_API_SECRET_KEY;
 
@@ -54,14 +59,23 @@ export async function connectToAlpaca() {
             continue;
             // quote check
           } else if (alpacaMessage.T === 'q') {
-            console.log('Quote received:', {
-              // symbol: alpacaMessage.S,
-              // bidPrice: alpacaMessage.bp,
-              // askPrice: alpacaMessage.ap,
-              // timestamp: alpacaMessage.t,
+            onQuote({
+              symbol: alpacaMessage.S,
+              bidPrice: alpacaMessage.bp,
+              askPrice: alpacaMessage.ap,
+              timestamp: alpacaMessage.t,
             });
             continue;
-            // error message
+            // trade
+          } else if (alpacaMessage.T === 't') {
+            onTrade({
+              symbol: alpacaMessage.S,
+              price: alpacaMessage.p,
+              size: alpacaMessage.s,
+              timestamp: alpacaMessage.t,  
+            })
+            continue;
+            // error
           } else if (alpacaMessage.T === 'error') {
             clearTimeout(authTimeout);
             reject(new Error(`Alpaca error ${alpacaMessage.code}: ${alpacaMessage.msg}`));

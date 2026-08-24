@@ -12,6 +12,9 @@ type OverviewSectionProps = {
   symbol: string | null;
   description?: string | null;
   snapshot: SnapshotResponse | null;
+  lastSale: number | null;
+  bid: number | null;
+  ask: number | null;
 };
 
 // STYLE COMPONENTS
@@ -42,7 +45,7 @@ function MarketDetailsGrid({ columns }: { columns: OverviewField[][] }) {
   );
 }
 
-export default function OverviewSection({ symbol, description, snapshot }: OverviewSectionProps) {
+export default function OverviewSection({ symbol, description, snapshot, lastSale, bid, ask }: OverviewSectionProps) {
 
   const resolvedMarketDetails: OverviewField[][] = [
     [
@@ -50,14 +53,14 @@ export default function OverviewSection({ symbol, description, snapshot }: Overv
       { label: "High", value: snapshot?.high != null ? formatPrice(snapshot.high) : undefined },
     ],
     [
-      { label: "Bid", value: snapshot?.bid != null ? formatPrice(snapshot.bid) : undefined },
+      { label: "Bid", value: bid != null ? formatPrice(bid) : undefined },
       { label: "Low", value: snapshot?.low != null ? formatPrice(snapshot.low) : undefined },
     ],
     [
-      { label: "Ask", value: snapshot?.ask != null ? formatPrice(snapshot.ask) : undefined },
+      { label: "Ask", value: ask != null ? formatPrice(ask) : undefined },
       { label: "Volume", value: snapshot?.volume != null ? formatVolume(snapshot.volume) : undefined },
     ],
-    [{ label: "Last sale", value: snapshot?.lastSale != null ? formatPrice(snapshot.lastSale) : undefined }],
+    [{ label: "Last sale", value: lastSale != null ? formatPrice(lastSale) : undefined }],
   ];
 
   return (
