@@ -20,12 +20,12 @@ type RangeDefinition = {
 const RANGE_CONFIG = {
 /*  lookback (how far back to fetch data)
     grouping (how much data to combine into  chart point)
-    ex: "1D": show data in the last 1 day and group the data into 5 minutes interval 
+    ex: "1D": show data in the last 1 day and group the data into 1 minute interval 
  */
     '1D': {
         grouping: {
             unit: 'minute',
-            count: 5,
+            count: 1,
         },
         lookback: {
             unit: 'day',

@@ -55,8 +55,14 @@ export type TradeUpdate = {
   timestamp: string;
 }
 
-export type BarUpdate = Bar & {
-   symbol: string;
+export type BarUpdate = {
+  symbol: string;
+  timestamp: string; 
+  open: number; 
+  high: number; 
+  low: number; 
+  close: number; 
+  volume: number; 
 }
 
 export type TradeMessage = {
@@ -65,9 +71,13 @@ export type TradeMessage = {
 }
 
 export type BarMessage = {
-  type: 'bar' | 'updatedBar' | 'dailyBar';
+  type: 'bar' | 'updatedBar';
   data: BarUpdate;
 }
 
 export type RealTimeMarketMessage =  QuoteMessage | TradeMessage | BarMessage; 
 
+export type ChartPoint = {
+  price: number;
+  time: string;
+}  

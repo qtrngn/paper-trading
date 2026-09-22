@@ -2,7 +2,7 @@ import 'dotenv/config';
 import { createServer } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
 import { connectToAlpaca, subscribeToSymbol } from './alpacaClient.js';
-import type { QuoteUpdate, TradeUpdate, SymbolSubscriptionRequest } from './_types.js';
+import type { QuoteUpdate, TradeUpdate, SymbolSubscriptionRequest, BarUpdate } from './_types.js';
 
 const port = Number(process.env.PORT || '8080');
 
@@ -18,9 +18,8 @@ webSocketServer.on('connection', (socket) => {
     const subscriptionRequest = JSON.parse(data.toString()) as SymbolSubscriptionRequest;
     // console.log(subscriptionRequest);
     if (subscriptionRequest.type === 'subscribe') {
-      subscribeToSymbol(subscriptionRequest.symbol)
+      subscribeToSymbol(subscriptionRequest.symbol);
     }
-
   });
 });
 
@@ -43,20 +42,32 @@ function handleTradeUpdate(trade: TradeUpdate): void {
   console.log(trade);
   const tradeMessage = {
     type: 'trade',
-    data: trade
+    data: trade,
   };
 
   const serializedTradeMessage = JSON.stringify(tradeMessage);
   webSocketServer.clients.forEach((browserClient) => {
-    if (browserClient.readyState === WebSocket. OPEN) {
+    if (browserClient.readyState === WebSocket.OPEN) {
       browserClient.send(serializedTradeMessage);
     }
-  })
+  });
 }
 
+function handleBarUpdate(bar: BarUpdate, type: 'bar' | 'updatedBar'): void {
+  const barMessage = {
+    type,
+    data: bar,
+  };
+  const serializedBarMessage = JSON.stringify(barMessage);
+  webSocketServer.clients.forEach((browserClient) => {
+    if (browserClient.readyState === WebSocket.OPEN) {
+      browserClient.send(serializedBarMessage);
+    }
+  });
+}
 
 export async function startServer() {
-  await connectToAlpaca({onQuote: handleQuoteUpdate, onTrade: handleTradeUpdate});
+  await connectToAlpaca({ onQuote: handleQuoteUpdate, onTrade: handleTradeUpdate, onBar:(bar) => handleBarUpdate(bar, 'bar'), onUpdatedBar: (bar) => handleBarUpdate(bar, 'updatedBar')  });
   server.listen(port, () => {
     console.log(`Server started on ${port}`);
   });

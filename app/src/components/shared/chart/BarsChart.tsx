@@ -14,18 +14,13 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import ChartState from "../../shared/chart/ChartState";
-
-import type { Bar } from "@/features/market/types";
+import type { ChartPoint } from "@/features/market/types";
 import { formatPrice } from "@/lib/formatters";
-import {
-  getChartSummary,
-  getDisplayChartSummary,
-  type HoveredChartPoint,
-} from "@/features/market/chartSummary";
+import { getChartSummary, getDisplayChartSummary } from "@/features/market/chartSummary";
 import ButtonRanges from "../../shared/chart/ButtonRanges";
 
 type BarsChartProps = {
-  bars: Bar[];
+  points: ChartPoint[];
   symbol: string | null;
   loading: boolean;
   error: string | null;
@@ -33,17 +28,10 @@ type BarsChartProps = {
   onRangeChange: (nextRange: string) => void;
 };
 
-export default function BarsChart({
-  bars,
-  symbol,
-  loading,
-  error,
-  range,
-  onRangeChange,
-}: BarsChartProps) {
-  const [hoveredBar, setHoveredBar] = useState<HoveredChartPoint | null>(null);
+export default function BarsChart({points, symbol,loading, error, range, onRangeChange}: BarsChartProps) {
+  const [hoveredPoint, setHoveredPoint] = useState<ChartPoint | null>(null);
 
-  // CARDS SITUATION
+  // CARDS
   if (!symbol) {
     return (
       <ChartState
@@ -80,12 +68,12 @@ export default function BarsChart({
     );
   }
 
-  if (bars.length === 0) {
+  if (points.length === 0) {
     return (
       <ChartState
         title={symbol}
         description="Showing price history for the selected range"
-        statLabel="Bars"
+        statLabel="Points"
         statValue="0"
         message="No chart data available for this symbol."
       />
@@ -93,38 +81,24 @@ export default function BarsChart({
   }
 
   // CHART DATA
-  const chartData = bars.map((bar) => ({
-    time: bar.t,
-    close: bar.c,
-    volume: bar.v,
-  }));
-
-  const summary = getChartSummary(bars);
-  const displaySummary = getDisplayChartSummary(summary, hoveredBar);
-  const lineColor = summary.isPositive
-    ? "#16a34a"
-    : summary.isNegative
-      ? "#dc2626"
-      : "#a1a1aa";
+  // const chartData = getChartSummary(points);
+  const summary = getChartSummary(points);
+  const displaySummary = getDisplayChartSummary(summary, hoveredPoint);
+  const lineColor = summary.isPositive ? "#16a34a" : summary.isNegative ? "#dc2626" : "#a1a1aa";
 
   // CONFIG
   const chartConfig = {
-    close: {
-      label: "Close",
+    price: {
+      label: "Price",
       color: lineColor,
     },
   } satisfies ChartConfig;
 
   // TEXT DESCRIPTION
-  const descriptionText = `${displaySummary.isPositive ? "+" : ""}${formatPrice(
-    displaySummary.absoluteChange,
-  )} (${displaySummary.isPositive ? "+" : ""}${displaySummary.percentChange.toFixed(2)}%)`;
+  const descriptionText = `${displaySummary.isPositive ? "+" : ""}${formatPrice(displaySummary.absoluteChange,)} 
+  (${displaySummary.isPositive ? "+" : ""}${displaySummary.percentChange.toFixed(2)}%)`;
 
-  const descriptionColor = displaySummary.isPositive
-    ? "text-emerald-600 font-bold"
-    : displaySummary.isNegative
-      ? "text-red-600 font-bold"
-      : "text-muted-foreground font-bold";
+  const descriptionColor = displaySummary.isPositive ? "text-emerald-600 font-bold" : displaySummary.isNegative ? "text-red-600 font-bold" : "text-muted-foreground font-bold";
 
   // UI RENDER
   return (
@@ -145,18 +119,18 @@ export default function BarsChart({
         >
           <LineChart
             accessibilityLayer
-            data={chartData}
+            data={points}
             margin={{ left: 12, right: 12 }}
             onMouseMove={(state) => {
               const payload = state?.activePayload?.[0]?.payload;
               if (payload) {
-                setHoveredBar({
+                setHoveredPoint({
                   time: payload.time,
-                  close: payload.close,
+                  price: payload.price,
                 });
               }
             }}
-            onMouseLeave={() => setHoveredBar(null)}
+            onMouseLeave={() => setHoveredPoint(null)}
           >
             <XAxis dataKey="time" hide />
             <YAxis
@@ -172,7 +146,7 @@ export default function BarsChart({
               content={
                 <ChartTooltipContent
                   className="w-37.5"
-                  nameKey="close"
+                  nameKey="price"
                   formatter={(value) => formatPrice(Number(value))}
                   labelFormatter={(value) =>
                     new Date(value).toLocaleDateString("en-US", {
@@ -185,7 +159,7 @@ export default function BarsChart({
               }
             />
             <Line
-              dataKey="close"
+              dataKey="price"
               type="monotone"
               stroke={lineColor}
               strokeWidth={2}

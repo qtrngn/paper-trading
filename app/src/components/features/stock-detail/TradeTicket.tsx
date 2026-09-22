@@ -43,15 +43,12 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
   const [tradeUnit, setTradeUnit] = useState<tradeUnit>("shares");
   const [isReviewing, setIsReviewing] = useState(false);
   const [limitPrice, setLimitPrice] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   // HANDLERS
   // next button click
   function handleNext() {
     setErrorMessage(null);
-    setSuccessMessage(null);
 
     const trimmedQuantity = quantity.trim();
     const qtyNumber = Number(trimmedQuantity);

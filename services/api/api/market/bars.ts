@@ -4,7 +4,7 @@ import { requireUid } from "../_lib/auth/requireUid";
 import { getSingleQueryParam } from "../_lib/http/query";
 import { parseSymbol } from "./symbol";
 import { fetchAlpacaBars } from "./alpacaBars";
-import { normalizeRange, isChartRange } from "./chartRange";
+import { normalizeRange, isChartRange, getRangeDefinition, toAlpacaTimeframe } from "./chartRange";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // METHOD GUARD
@@ -31,6 +31,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (!isChartRange(range)) {
     return res.status(400).json({ error: "Missing or invalid range" });
   }
+  const selectedRangeConfig = getRangeDefinition(range);
+  const timeframe = toAlpacaTimeframe(selectedRangeConfig.grouping);
 
   // ALPACA API CALL
   try {
@@ -41,6 +43,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       symbol,
       range,
       bars,
+      timeframe,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown_error";

@@ -1,17 +1,19 @@
 import { WebSocket } from 'ws';
 import type { RawData } from 'ws';
-import type { QuoteUpdate, TradeUpdate } from './_types.js';
+import type { QuoteUpdate, TradeUpdate, BarUpdate } from './_types.js';
 
 const alpacaSocketUrl = 'wss://stream.data.alpaca.markets/v2/iex';
 let alpacaSocket: WebSocket | undefined;
 type RealtimeHandlers = {
   onQuote: (quote: QuoteUpdate) => void;
   onTrade: (trade: TradeUpdate) => void;
+  onBar: (bar: BarUpdate) => void;
+  onUpdatedBar: (bar: BarUpdate) => void;
 };
 
 
 // CONNECT TO ALPACA / AUTHENTICATION
-export async function connectToAlpaca({onQuote, onTrade}: RealtimeHandlers): Promise<void> {
+export async function connectToAlpaca({onQuote, onTrade, onBar, onUpdatedBar}: RealtimeHandlers): Promise<void> {
   const keyId = process.env.ALPACA_API_KEY;
   const secret = process.env.ALPACA_API_SECRET_KEY;
 
@@ -74,6 +76,23 @@ export async function connectToAlpaca({onQuote, onTrade}: RealtimeHandlers): Pro
               size: alpacaMessage.s,
               timestamp: alpacaMessage.t,  
             })
+            continue;
+            // bar
+          } else if (alpacaMessage.T === 'b' || alpacaMessage.T === 'u'){
+            const barUpdate: BarUpdate = {
+              symbol: alpacaMessage.S,
+              timestamp: alpacaMessage.t,
+              open: alpacaMessage.o,
+              high: alpacaMessage.h,
+              low: alpacaMessage.l,
+              close: alpacaMessage.c,
+              volume: alpacaMessage.v,
+            };
+            if (alpacaMessage.T === 'b') {
+              onBar(barUpdate);
+            } else {
+              onUpdatedBar(barUpdate);
+            }
             continue;
             // error
           } else if (alpacaMessage.T === 'error') {

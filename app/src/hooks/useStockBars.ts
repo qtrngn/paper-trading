@@ -9,16 +9,17 @@ export function useStockBars(symbol: string | null, range: string) {
     queryKey: queryKey,
     queryFn: async () => {
       if (!symbol) {
-        return [];
+        throw new Error("Symbol is required");
       }
-      return getBars(symbol, range)
+      return getBars(symbol, range);
     },
     enabled: !!symbol,
   })
 
 
   return { 
-    bars: barsQuery.data ?? [],
+    bars: barsQuery.data?.bars ?? [],
+    timeframe: barsQuery.data?.timeframe ?? null,
     barsLoading: barsQuery.isLoading,
     barsError: barsQuery.error ? 'Failed to load bars' : null,
    };

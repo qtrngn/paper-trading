@@ -1,23 +1,18 @@
-import type { Bar } from "./types"
+import type { ChartPoint } from "./types"
 
 export type ChartSummary = {
-  firstBar: Bar
-  latestBar: Bar
-  latestClose: number
+  firstPoint: ChartPoint
+  latestPoint: ChartPoint
+  latestPrice: number
   absoluteChange: number
   percentChange: number
   isPositive: boolean
   isNegative: boolean
   isFlat: boolean
-}
-
-export type HoveredChartPoint = {
-  time: string
-  close: number
 }
 
 export type DisplayChartSummary = {
-  displayClose: number
+  displayPrice: number
   absoluteChange: number
   percentChange: number
   isPositive: boolean
@@ -25,23 +20,22 @@ export type DisplayChartSummary = {
   isFlat: boolean
 }
 
-export function getChartSummary(bars: Bar[]): ChartSummary {
-  const firstBar = bars[0]
-  const latestBar = bars[bars.length - 1]
+export function getChartSummary(points: ChartPoint[]): ChartSummary {
+  const firstPoint = points[0]
+  const latestPoint = points[points.length - 1]
 
-  const latestClose = latestBar.c
-  const absoluteChange = latestBar.c - firstBar.c
-  const percentChange =
-    firstBar.c === 0 ? 0 : (absoluteChange / firstBar.c) * 100
+  const latestPrice = latestPoint.price
+  const absoluteChange = latestPoint.price - firstPoint.price
+  const percentChange = firstPoint.price === 0 ? 0 : (absoluteChange / firstPoint.price) * 100
 
   const isPositive = absoluteChange > 0
   const isNegative = absoluteChange < 0
   const isFlat = absoluteChange === 0
 
   return {
-    firstBar,
-    latestBar,
-    latestClose,
+    firstPoint,
+    latestPoint,
+    latestPrice,
     absoluteChange,
     percentChange,
     isPositive,
@@ -50,22 +44,17 @@ export function getChartSummary(bars: Bar[]): ChartSummary {
   }
 }
 
-export function getDisplayChartSummary(
-  summary: ChartSummary,
-  hoveredBar: HoveredChartPoint | null
-): DisplayChartSummary {
-  const displayClose = hoveredBar ? hoveredBar.close : summary.latestClose
+export function getDisplayChartSummary(summary: ChartSummary, hoveredPoint: ChartPoint | null): DisplayChartSummary {
 
-  const absoluteChange = displayClose - summary.firstBar.c
-  const percentChange =
-    summary.firstBar.c === 0 ? 0 : (absoluteChange / summary.firstBar.c) * 100
-
+  const displayPrice = hoveredPoint ? hoveredPoint.price : summary.latestPrice
+  const absoluteChange = displayPrice - summary.firstPoint.price
+  const percentChange = summary.firstPoint.price === 0 ? 0 : (absoluteChange / summary.firstPoint.price) * 100
   const isPositive = absoluteChange > 0
   const isNegative = absoluteChange < 0
   const isFlat = absoluteChange === 0
 
   return {
-    displayClose,
+    displayPrice,
     absoluteChange,
     percentChange,
     isPositive,

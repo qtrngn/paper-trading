@@ -27,12 +27,12 @@ export async function getQuote(symbol: string): Promise<Quote> {
 }
 
 // API FOR BAR
-export async function getBars(symbol: string, range: string): Promise<Bar[]> {
+export async function getBars(symbol: string, range: string): Promise<GetBarsResponse> {
     const response = await api.get<GetBarsResponse>("/api/market/bars", {
         params: { symbol, range }
 
     });
-    return response.data.bars;
+    return response.data;
 }
 
 // API FOR SEARCH
