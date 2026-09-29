@@ -19,14 +19,31 @@ export type Order = {
   updatedAt: string;
 };
 
-export type Position ={
-    symbol: string;
-    qty: number;
-    avgCost: number;
-    marketPrice?: number;
-    marketValue?: number;
-    unrealizedPlPct?: number;
-}
+export type PortfolioPosition = {
+  symbol: string;
+  quantity: number;
+  averageCost: number;
+  currentPrice: number | null;
+  marketValue: number | null;
+  costBasis: number;
+  unrealizedProfitLoss: number | null;
+  unrealizedProfitLossPercent: number | null;
+};
+
+export type PortfolioSummary = {
+  cash: number;
+  buyingPower: number;
+  marketValue: number | null;
+  equity: number | null;
+  costBasis: number;
+  unrealizedProfitLoss: number | null;
+  unrealizedProfitLossPercent: number | null;
+};
+
+export type Portfolio = {
+  summary: PortfolioSummary;
+  positions: PortfolioPosition[];
+};
 
 export type QuoteView = {
     symbol: string;
@@ -34,14 +51,4 @@ export type QuoteView = {
     change?: number;
     changePct?: number;
     asOf?: string;
-}
-
-export type PortfolioSummary = {
-    equity?: number;
-    cash?: number;
-    buyingPower?: number;
-    dayPL?: number;
-    dayPLPct?: number;
-    totalReturn?: number;
-    totalReturnPct?: number;
-}
+};

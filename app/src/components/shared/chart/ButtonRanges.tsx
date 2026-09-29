@@ -27,10 +27,8 @@ export default function ButtonRanges({
             size="sm"
             onClick={() => onChange(range)}
             className={cn(
-              "rounded-lg border-0 shadow-none transition-all duration-200 ease-out focus-visible:ring-0",
-              isActive
-                ? "bg-neutral-900 text-white hover:bg-neutral-800"
-                : "bg-transparent text-neutral-600 hover:bg-neutral-100"
+              "range-button",
+              isActive && "range-button-active"
             )}
           >
             {range}

@@ -43,9 +43,6 @@ const navItems: NavItem[] = [
   { label: "Balance", to: "/balance", icon: CircleDollarSign },
 ];
 
-const railButtonClassName =
-  "h-11 w-11 justify-center rounded-2xl p-0 transition-colors [&>svg]:size-5 text-gray-500 hover:text-neutral-400 hover:bg-zinc-800 data-[active=true]:bg-zinc-800 data-[active=true]:[&>svg]:text-white";
-
 function isNavItemActive(pathname: string, to: string): boolean {
   if (to === "/") {
     return pathname === "/";
@@ -59,7 +56,7 @@ export default function SideBar({ onOpenSearch }: SideBarProps) {
   return (
     <div>
       <TooltipProvider delayDuration={100}>
-        <Sidebar collapsible="none" className=" pt-10">
+        <Sidebar collapsible="none" className="sidebar-shell">
           <SidebarHeader className="items-center px-0 py-4">
             <Tooltip>
               <NavLink
@@ -86,7 +83,7 @@ export default function SideBar({ onOpenSearch }: SideBarProps) {
                           type="button"
                           onClick={onOpenSearch}
                           aria-label="Open search"
-                          className={railButtonClassName}
+                          className="sidebar-rail-button"
                         >
                           <Search />
                           <span className="sr-only">Search</span>
@@ -106,7 +103,7 @@ export default function SideBar({ onOpenSearch }: SideBarProps) {
                             <SidebarMenuButton
                               asChild
                               isActive={isActive}
-                              className={railButtonClassName}
+                              className="sidebar-rail-button"
                             >
                               <NavLink to={item.to} aria-label={item.label}>
                                 <Icon />

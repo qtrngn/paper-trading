@@ -2,18 +2,16 @@ import { useState, useEffect } from "react";
 import { onIdTokenChanged, signOut } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 import { AuthContext } from "@/features/auth/authContext";
-import { getAccount } from "@/features/auth/api";
 
 // TYPES
 import type { ReactNode } from "react";
-import type { AuthContextValue, Account } from "@/features/auth/types";
+import type { AuthContextValue } from "@/features/auth/types";
 import type { User } from "firebase/auth";
 
 
 export default function AuthProvider({ children }: { children: ReactNode }) {
     // STATES
     const [user, setUser] = useState<User | null>(null);
-    const [account, setAccount] = useState<Account | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
 
@@ -25,58 +23,20 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
         }
     }
 
-    const refreshAccount = async () => {
-        if (!user) return;
-        setError(null);
-        try {
-            // TODO: fetch account using getAccount(idToken)
-            setLoading(true);
-            const result = await getAccount();
-            setAccount(result);
-           
-        } catch {
-            setAccount(null); 
-            
-            setError("Failed to refresh account")
-        } finally {
-            setLoading(false);
-        }
-    }
-
     useEffect(() => {
-        let isMounted = true; 
-        let authEventVersion = 0;
-
-        const unsubscribe = onIdTokenChanged(auth, async (nextUser) => {
-            authEventVersion = authEventVersion + 1;
-            const myVersion = authEventVersion;
-            
+        const unsubscribe = onIdTokenChanged(auth, (nextUser) => {
             setError(null);
-            const isStale = () => !isMounted || myVersion !== authEventVersion;
 
         if(!nextUser) {
             setUser(null);
-            setAccount(null);
             setLoading(false);
             return;
         } 
         setUser(nextUser);
-        setLoading(true);
-        try {
-            const result = await getAccount();
-            if (isStale()) return; 
-            setAccount(result);
-        } catch {
-            if (isStale()) return; 
-            setAccount(null);
-            setError("Failed to load account")
-        } finally {
-            if (!isStale()) setLoading(false);
-        }
+        setLoading(false);
      })
     
       return() => {
-        isMounted = false;
         unsubscribe();
       };  
    
@@ -84,11 +44,9 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
 
     const value: AuthContextValue = {
         user,
-        account,
         loading,
         error,
         logout,
-        refreshAccount,
     }
 
     return (

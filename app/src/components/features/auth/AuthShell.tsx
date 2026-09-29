@@ -6,34 +6,34 @@ type AuthProps = {
 
 export default function AuthShell({ title, subtitle, children }: AuthProps) {
   return (
-    <div className="min-h-screen w-screen grid grid-cols-1 lg:grid-cols-[2fr_1fr]">
+    <div className="auth-shell">
       <aside
-        className="relative hidden lg:block overflow-hidden bg-cover bg-center"
+        className="auth-hero"
         style={{ backgroundImage: "url(/bg.jpg)" }}
       >
         {/* Overlay */}
-        <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+        <div className="auth-hero-overlay" />
 
         {/* Logo */}
-        <div className="absolute left-8 top-8 display-title">
+        <div className="auth-logo-text">
           Trading Center
         </div>
 
-        <div className="relative z-10 h-full flex flex-col justify-center px-16 capitalize">
+        <div className="auth-hero-content">
           {/* Header */}
-          <h1 className="mt-3 page-title [text-shadow:3px_6px_5px_#275382] tracking-wider">
+          <h1 className="page-title auth-hero-title">
             TRADE WITH VIRTUAL CASH
           </h1>
           {/* Sub-header */}
-          <p className="mt-5 max-w-md body-text text-white">
+          <p className="auth-hero-subtitle">
             No real money was harmed in the making of this portfolio.
           </p>
         </div>
       </aside>
 
       {/* Main section */}
-      <main className="relative flex items-center justify-center bg-zinc-900 px-6 py-12">
-        <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/10 p-8 shadow-2xl backdrop-blur">
+      <main className="auth-main">
+        <div className="auth-card">
           <h2 className="card-title-lg">{title}</h2>
           {subtitle && <p className="label-text mt-2">{subtitle}</p>}
           <div className="mt-6">{children}</div>

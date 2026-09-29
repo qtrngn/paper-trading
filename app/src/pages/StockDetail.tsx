@@ -35,8 +35,8 @@ export default function StockDetailPage() {
   const resolvedAsk = latestQuote?.askPrice ?? snapshot?.ask ?? null;
 
   return (
-    <main className="p-4 shadow-sm sm:p-5">
-      <section className="grid gap-4 xl:grid-cols-[minmax(0,1fr)_390px] xl:items-start">
+    <main className="app-page">
+      <section className="app-grid-with-ticket">
         <BarsChart
           points={points}
           symbol={selectedSymbol}

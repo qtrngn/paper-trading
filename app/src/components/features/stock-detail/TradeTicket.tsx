@@ -15,7 +15,6 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowDownUp, ArrowLeft, MinusIcon, PlusIcon } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 import OrderTypeDropdown from "@/components/shared/menu/OrderTypeDropdown";
 
@@ -29,11 +28,6 @@ type TradeTicketProps = {
 };
 
 type tradeUnit = "shares" | "dollars";
-
-// STYLES
-const tradeFormRowClass = "grid grid-cols-[1fr_1.4fr] items-center gap-4";
-const tradeLabelClass = "text-sm font-normal text-text-secondary";
-const reviewOrderRowClass = "flex items-center justify-between align-item-center border-b border-border-soft py-4";
 
 export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketProps) {
   // STATES
@@ -153,10 +147,10 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
                 className="w-full"
               >
                 <TabsList variant="line" className="trade-tab-list">
-                  <TabsTrigger value="buy" className="text-lg cursor-pointer">
+                  <TabsTrigger value="buy" className="trade-tab-trigger">
                     Buy
                   </TabsTrigger>
-                  <TabsTrigger value="sell" className="text-lg cursor-pointer">
+                  <TabsTrigger value="sell" className="trade-tab-trigger">
                     Sell
                   </TabsTrigger>
                 </TabsList>
@@ -164,16 +158,16 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
 
               {/* TRADE CARD CONTENT */}
               <div className="trade-panel">
-                <div className={tradeFormRowClass}>
-                  <span className={tradeLabelClass}>Order type</span>
+                <div className="trade-form-row">
+                  <span className="trade-label">Order type</span>
                   <OrderTypeDropdown side={side} orderType={orderType} onOrderTypeChange={handleOrderTypeChange} />
                 </div>
 
                 {/* RENDER MARKET, LIMIT CONDITION */}
                 {/* market */}
                 {orderType === "market" ? (
-                  <div className={tradeFormRowClass}>
-                    <span className={tradeLabelClass}>Buy in</span>
+                  <div className="trade-form-row">
+                    <span className="trade-label">Buy in</span>
                     <Button type="button" variant="outline" className="flex justify-between" onClick={handleTradeUnitChange}>
                       {tradeUnit === "shares" ? "Shares" : "Dollars"}
                       <ArrowDownUp size={14} />
@@ -181,8 +175,8 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
                   </div>
                 ) : (
                   // limit
-                  <Field className={tradeFormRowClass}>
-                    <FieldLabel htmlFor="limit" className={tradeLabelClass}>
+                  <Field className="trade-form-row">
+                    <FieldLabel htmlFor="limit" className="trade-label">
                       Limit price
                     </FieldLabel>
 
@@ -221,8 +215,8 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
                   </Field>
                 )}
 
-                <Field className={tradeFormRowClass}>
-                  <FieldLabel htmlFor="shares" className={tradeLabelClass}>
+                <Field className="trade-form-row">
+                  <FieldLabel htmlFor="shares" className="trade-label">
                     {tradeUnit === "shares" ? "Shares" : "Dollars"}
                   </FieldLabel>
 
@@ -248,7 +242,7 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
               </div>
 
               {/* ESTIMATED COST SECTION / FOOTER */}
-              <div className="mt-5 border-t border-white/10 pt-5">
+              <div className="mt-5 border-t border-border-soft pt-5">
                 <dl className="flex items-center justify-between">
                   <dt className="label-text-strong">{tradeUnit === "shares" ? "Estimated cost" : "Estimated shares"}</dt>
                   <dd className="label-text-strong text-lg">
@@ -269,11 +263,11 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
             <footer className="px-4 pb-3">
               <button type="button" className="flex w-full items-center justify-between text-left">
                 <span>
-                  <span className="block text-sm font-bold text-white">TFSA</span>
-                  <span className="block text-sm text-white">$140.23 CAD</span>
+                  <span className="value-text-sm block">TFSA</span>
+                  <span className="number-text block text-sm">$140.23 CAD</span>
                 </span>
 
-                <span aria-hidden="true" className="text-white">
+                <span aria-hidden="true" className="text-text-primary">
                   ⌄
                 </span>
               </button>
@@ -295,23 +289,23 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
 
             <dl>
               <div>
-                <div className={cn(reviewOrderRowClass, "border-b-0")}>
+                <div className="review-order-row border-b-0">
                   <dt className="label-text-strong text-primary">Order type</dt>
                   <dd className="label-text-strong">Market</dd>
                 </div>
 
-                <div className={cn(reviewOrderRowClass)}>
+                <div className="review-order-row">
                   <dt className="label-text-strong text-primary">{tradeUnit === "shares" ? "Shares" : "Dollars"}</dt>
                   <dd className="label-text-strong">{quantity}</dd>
                 </div>
               </div>
 
-              <div className={reviewOrderRowClass}>
+              <div className="review-order-row">
                 <dt className="label-text-strong text-primary">Account</dt>
                 <dd className="label-text-strong">{symbol}</dd>
               </div>
 
-              <div className={reviewOrderRowClass}>
+              <div className="review-order-row">
                 <dt className="label-text-strong text-primary">{tradeUnit === "shares" ? "Estimated cost" : "Estimated shares"}</dt>
                 <dd className="label-text-strong">{tradeUnit === "shares" ? `$${estimatedCost.toFixed(2)} CAD` : estimatedShares.toFixed(4)}</dd>
               </div>

@@ -72,7 +72,7 @@ export default function OverviewSection({ symbol, description, snapshot, lastSal
 
       <section className="space-y-6">
         <SectionTitle>About {symbol ?? "Company"}</SectionTitle>
-        <p className="max-w-6xl text-base leading-8 text-zinc-300">{description ?? "Company description will go here."}</p>
+        <p className="body-text max-w-6xl">{description ?? "Company description will go here."}</p>
       </section>
     </div>
   );

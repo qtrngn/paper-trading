@@ -88,7 +88,7 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
   }
 
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange} showCloseButton={false} className="bg-black left-1/2 top-[25vh] -translate-x-1/2 translate-y-0">
+    <CommandDialog open={open} onOpenChange={onOpenChange} showCloseButton={false} className="left-1/2 top-[25vh] -translate-x-1/2 translate-y-0 bg-surface">
       <CommandInput
         placeholder="Search symbol or company..."
         value={searchQuery}
@@ -97,7 +97,7 @@ export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
       />
 
       {isListOpen && (
-        <CommandList className = "text-white">
+        <CommandList className="text-text-primary">
           {suggestionsLoading ? (
             <div className="px-3 py-2 text-sm font-bold">
               Searching...

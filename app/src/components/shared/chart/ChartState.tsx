@@ -22,31 +22,28 @@ import {
     message,
   }: ChartStateProps) {
     return (
-      <Card className="py-4 sm:py-0">
-        <CardHeader className="flex flex-col items-stretch border-b p-0! sm:flex-row">
-          <div className="flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0">
+      <Card className="chart-card">
+        <CardHeader className="chart-header chart-header-bordered">
+          <div className="chart-header-copy">
             <CardTitle>{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
   
           <div className="flex">
-            <div className="flex flex-1 flex-col justify-center gap-1 border-t px-6 py-4 text-left sm:border-t-0 sm:border-l sm:px-8 sm:py-6">
-              <span className="text-xs text-muted-foreground">{statLabel}</span>
-              <span className="text-lg leading-none font-bold sm:text-3xl">
+            <div className="chart-state-stat">
+              <span className="caption-text">{statLabel}</span>
+              <span className="chart-state-value">
                 {statValue}
               </span>
             </div>
           </div>
         </CardHeader>
   
-        <CardContent className="px-2 sm:p-6">
-          <div className="flex h-62.5 w-full items-center justify-center rounded-xl border border-dashed border-border text-sm text-muted-foreground">
+        <CardContent className="chart-content">
+          <div className="empty-state-panel">
             {message}
           </div>
         </CardContent>
       </Card>
     )
   }
-
-
-  

@@ -72,7 +72,7 @@ export default function RegisterPage() {
   return (
     <AuthShell title="Register" subtitle="Create an account with us">
       <form onSubmit={onSubmit}>
-        <FieldSet className="w-full text-white font-bold">
+        <FieldSet className="auth-form-fieldset">
           <FieldGroup>
             {/* First name */}
             <Field>
@@ -147,7 +147,7 @@ export default function RegisterPage() {
               />
             </Field>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p className="error-text-strong">{error}</p>}
 
             <Button type="submit" disabled={registering} className="w-full">
               {registering ? "Creating..." : "Create account"}

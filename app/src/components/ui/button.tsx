@@ -25,7 +25,7 @@ const buttonVariants = cva(
           "bg-surface-elevated text-text-secondary hover:bg-surface-muted hover:text-text-primary",
 
         destructive:
-          "bg-danger-strong text-white hover:bg-danger-strong/90 focus-visible:ring-danger/30",
+          "bg-danger-strong text-text-primary hover:bg-danger-strong/90 focus-visible:ring-danger/30",
 
         link:
           "h-auto rounded-none p-0 text-text-secondary underline-offset-4 hover:text-text-primary hover:underline",
@@ -34,7 +34,7 @@ const buttonVariants = cva(
           "bg-brand text-brand-foreground hover:bg-brand-hover",
 
         sell:
-          "bg-danger-strong text-white hover:bg-danger-strong/90",
+          "bg-danger-strong text-text-primary hover:bg-danger-strong/90",
       },
 
       size: {

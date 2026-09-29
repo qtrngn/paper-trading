@@ -19,7 +19,7 @@ return [orders]
 
 
 import { api } from "@/lib/api";
-import type { Order, OrderSide, OrderType } from "./types";
+import type { Order, OrderSide, OrderType, Portfolio } from "./types";
 
 
 
@@ -54,4 +54,10 @@ export async function submitOrder(orderInput: SubmitOrderRequest): Promise<Order
     return response.data.order;
 }
 
+// GET PORTFOLIO
+export async function getPortfolio(): Promise<Portfolio> {
+    const response = await api.get<Portfolio>("/api/portfolio");
+    return response.data;
+}
 
+ 

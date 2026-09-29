@@ -84,7 +84,11 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
   // const chartData = getChartSummary(points);
   const summary = getChartSummary(points);
   const displaySummary = getDisplayChartSummary(summary, hoveredPoint);
-  const lineColor = summary.isPositive ? "#16a34a" : summary.isNegative ? "#dc2626" : "#a1a1aa";
+  const lineColor = summary.isPositive
+    ? "var(--success)"
+    : summary.isNegative
+      ? "var(--danger-strong)"
+      : "var(--text-muted)";
 
   // CONFIG
   const chartConfig = {
@@ -98,21 +102,25 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
   const descriptionText = `${displaySummary.isPositive ? "+" : ""}${formatPrice(displaySummary.absoluteChange,)} 
   (${displaySummary.isPositive ? "+" : ""}${displaySummary.percentChange.toFixed(2)}%)`;
 
-  const descriptionColor = displaySummary.isPositive ? "text-emerald-600 font-bold" : displaySummary.isNegative ? "text-red-600 font-bold" : "text-muted-foreground font-bold";
+  const descriptionColor = displaySummary.isPositive
+    ? "text-positive"
+    : displaySummary.isNegative
+      ? "text-negative"
+      : "text-neutral-status";
 
   // UI RENDER
   return (
-    <Card className="py-4 sm:py-0">
-      <CardHeader className="flex flex-col items-stretch p-4 sm:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-1 px-6 pb-3 sm:pb-0">
-          <CardTitle className="text-xl text-white">{symbol}</CardTitle>
+    <Card className="chart-card">
+      <CardHeader className="chart-header">
+        <div className="chart-header-copy">
+          <CardTitle className="card-title-lg">{symbol}</CardTitle>
           <CardDescription className={descriptionColor}>
             {descriptionText}
           </CardDescription>
         </div>
       </CardHeader>
 
-      <CardContent className="px-2 sm:p-6">
+      <CardContent className="chart-content">
         <ChartContainer
           config={chartConfig}
           className="aspect-auto h-62.5 w-full"
@@ -167,7 +175,7 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
             />
           </LineChart>
         </ChartContainer>
-        <div className="border-t border-zinc-600">
+        <div className="chart-range-footer">
           <ButtonRanges value={range} onChange={onRangeChange} />
         </div>
       </CardContent>

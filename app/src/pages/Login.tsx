@@ -65,10 +65,10 @@ export default function LoginPage() {
   // UI RENDERING
   return (
     <AuthShell title="Welcome back" subtitle="Sign in to your account">
-      {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
+      {error && <p className="error-text-strong mb-3">{error}</p>}
 
       <form onSubmit={onSubmit}>
-        <FieldSet className="w-full text-white font-bold">
+        <FieldSet className="auth-form-fieldset">
           <FieldGroup>
             {/* Email */}
             <Field>
@@ -99,7 +99,7 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/60 hover:text-white cursor-pointer p-0"
+                  className="auth-password-toggle"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword ? <Eye size={20} /> : <EyeClosed size={20} />}
@@ -108,11 +108,11 @@ export default function LoginPage() {
             </Field>
 
             {/* Register link */}
-            <p className="text-sm text-white">
+            <p className="auth-account-prompt">
               Don&apos;t have an account yet?{" "}
               <Link
                 to="/register"
-                className="text-white underline underline-offset-4 hover:opacity-90"
+                className="auth-link"
               >
                 Create one
               </Link>
@@ -130,10 +130,10 @@ export default function LoginPage() {
         </FieldSet>
       </form>
 
-      <div className="my-4 flex items-center gap-3">
-        <div className="h-px flex-1 bg-white/10" />
-        <span className="text-xs text-white/50">OR</span>
-        <div className="h-px flex-1 bg-white/10" />
+      <div className="auth-divider-row">
+        <div className="auth-divider" />
+        <span className="auth-divider-label">OR</span>
+        <div className="auth-divider" />
       </div>
 
       <Button
@@ -147,5 +147,4 @@ export default function LoginPage() {
     </AuthShell>
   );
 }
-
 
