@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 // TYPES
-import type { OrderSide, OrderType } from "@/features/trading/types.ts";
+import type { OrderSide, OrderType } from "@/features/trading/types";
 
 type OrderTypeDropdownProps = {
   side: OrderSide;

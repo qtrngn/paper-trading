@@ -139,3 +139,15 @@ export function subscribeToSymbol(symbol: string): void {
     alpacaSocket.send(serializedSubscriptionRequest);
   }
 }
+
+export function unsubscribeFromSymbol(symbol: string): void {
+    if (!alpacaSocket || alpacaSocket.readyState !== WebSocket.OPEN){return;}
+    const unsubscription = {
+      action: 'unsubscribe',
+      trades: [symbol],
+      quotes: [symbol],
+      bars: [symbol],
+      updatedBars: [symbol],
+    }
+  alpacaSocket.send(JSON.stringify(unsubscription));
+}

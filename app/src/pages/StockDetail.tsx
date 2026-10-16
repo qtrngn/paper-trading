@@ -3,7 +3,7 @@ import { useStockBars } from '@/hooks/useStockBars';
 import { useStockSnapshot } from '@/hooks/useStockSnapshot';
 import { useRealtimeMarketData } from '@/hooks/useRealtimeMarketData';
 import { useLiveChartPoints } from '@/hooks/useLiveChartPoints';
-import BarsChart from '@/components/shared/chart/BarsChart';
+import BarsChart from '@/components/features/market/chart/BarsChart';
 import OverviewSection from '@/components/features/stock-detail/OverviewSection';
 import TradeTicket from '@/components/features/stock-detail/TradeTicket';
 import type { ChartPoint } from '@/features/market/types';

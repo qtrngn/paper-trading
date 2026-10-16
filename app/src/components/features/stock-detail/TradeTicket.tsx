@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowDownUp, ArrowLeft, MinusIcon, PlusIcon } from "lucide-react";
 
-import OrderTypeDropdown from "@/components/shared/menu/OrderTypeDropdown";
+import OrderTypeDropdown from "@/components/features/stock-detail/OrderTypeDropdown";
 
 // Types
 import type { OrderSide, OrderType } from "@/features/trading/types.ts";

@@ -1,11 +1,10 @@
 import { NavLink, useLocation } from "react-router-dom";
 import {
-  Activity,
   BriefcaseBusiness,
-  CircleDollarSign,
   ClipboardList,
   Home,
   Search,
+  Clock,
 } from "lucide-react";
 import {
   Sidebar,
@@ -37,10 +36,9 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { label: "Home", to: "/", icon: Home },
-  { label: "Positions", to: "/positions", icon: BriefcaseBusiness },
+  { label: "Holdings", to: "/holdings", icon: BriefcaseBusiness },
   { label: "Orders", to: "/orders", icon: ClipboardList },
-  { label: "Activities", to: "/activities", icon: Activity },
-  { label: "Balance", to: "/balance", icon: CircleDollarSign },
+  { label: "Activity", to: "/activity", icon: Clock },
 ];
 
 function isNavItemActive(pathname: string, to: string): boolean {

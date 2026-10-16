@@ -252,6 +252,34 @@
     @apply grid gap-4 xl:grid-cols-[minmax(0,1fr)_390px] xl:items-start;
   }
 
+  .home-dashboard-grid {
+    @apply grid gap-6 xl:grid-cols-[minmax(0,1fr)_360px] xl:items-start;
+  }
+
+  .portfolio-hero {
+    @apply min-w-0 border-b border-border-soft pb-6;
+  }
+
+  .portfolio-history-placeholder {
+    @apply mt-8 flex h-72 items-center justify-center rounded-xl border border-dashed border-border-soft bg-surface/40 px-6 text-center;
+  }
+
+  .portfolio-summary-grid {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+
+  .portfolio-summary-card {
+    @apply rounded-xl border border-border-soft bg-surface p-5 shadow-sm;
+  }
+
+  .holdings-panel {
+    @apply rounded-xl border border-border-soft bg-surface p-5 shadow-sm xl:sticky xl:top-24;
+  }
+
+  .holding-row {
+    @apply flex items-center justify-between gap-4 border-t border-border-soft py-4 first:border-t-0;
+  }
+
   /* Typography repeated across chart, overview, trade ticket, auth */
   .page-title {
     @apply text-3xl font-bold text-text-primary;

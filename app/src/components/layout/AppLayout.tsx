@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import SideBar from "../shared/sidebar/SideBar";
-import SearchBar from "../shared/sidebar/SearchBar";
+import SideBar from "@/components/layout/SideBar";
+import SearchBar from "@/components/features/market/SearchBar";
 
 export default function AppLayout() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);

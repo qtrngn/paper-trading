@@ -13,11 +13,11 @@ import {
   ChartTooltipContent,
   type ChartConfig,
 } from "@/components/ui/chart";
-import ChartState from "../../shared/chart/ChartState";
+import ChartState from "./ChartState";
 import type { ChartPoint } from "@/features/market/types";
 import { formatPrice } from "@/lib/formatters";
 import { getChartSummary, getDisplayChartSummary } from "@/features/market/chartSummary";
-import ButtonRanges from "../../shared/chart/ButtonRanges";
+import ButtonRanges from "./ButtonRanges";
 
 type BarsChartProps = {
   points: ChartPoint[];

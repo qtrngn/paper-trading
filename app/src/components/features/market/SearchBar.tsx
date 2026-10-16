@@ -22,7 +22,7 @@ function normalizeSymbol(value: string) {
   return value.trim().toUpperCase();
 }
 
-export default function SearchBar({open, onOpenChange,}: SearchBarProps) {
+export default function SearchBar({ open, onOpenChange }: SearchBarProps) {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isListOpen, setIsListOpen] = useState(false);
