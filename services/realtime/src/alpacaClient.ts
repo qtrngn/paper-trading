@@ -4,7 +4,10 @@ import type { QuoteUpdate, TradeUpdate, BarUpdate } from './_types.js';
 
 const alpacaSocketUrl = 'wss://stream.data.alpaca.markets/v2/iex';
 let alpacaSocket: WebSocket | undefined;
-type RealtimeHandlers = {
+let isAuthenticated = false;
+let connectionPromise: Promise<void> | undefined = undefined;
+
+export type RealtimeHandlers = {
   onQuote: (quote: QuoteUpdate) => void;
   onTrade: (trade: TradeUpdate) => void;
   onBar: (bar: BarUpdate) => void;
@@ -17,11 +20,19 @@ export async function connectToAlpaca({onQuote, onTrade, onBar, onUpdatedBar}: R
   const keyId = process.env.ALPACA_API_KEY;
   const secret = process.env.ALPACA_API_SECRET_KEY;
 
+  if (isAlpacaConnected()) {
+    return;
+  }
+
+  if (connectionPromise) {
+    return connectionPromise;
+  }
+
   if (!keyId || !secret) {
     throw new Error('Missing Alpaca credentials');
   }
 
-  await new Promise<void>((resolve, reject) => {
+  connectionPromise = new Promise<void>((resolve, reject) => {
     const socket = new WebSocket(alpacaSocketUrl);
     alpacaSocket = socket;
 
@@ -53,6 +64,7 @@ export async function connectToAlpaca({onQuote, onTrade, onBar, onUpdatedBar}: R
           // success/authenticated message
           if (alpacaMessage.T === 'success' && alpacaMessage.msg === 'authenticated') {
             clearTimeout(authTimeout);
+            isAuthenticated = true;
             resolve();
             return;
             // subscription check
@@ -114,12 +126,18 @@ export async function connectToAlpaca({onQuote, onTrade, onBar, onUpdatedBar}: R
     });
     // else
     socket.on('close', () => {
+      isAuthenticated = false;
       clearTimeout(authTimeout);
       reject(new Error('Alpaca WebSocket closed before authentication completed'));
     });
     socket.on('open', handleAlpacaOpen);
     socket.on('message', handleAlpacaMessage);
   });
+  try {
+    await connectionPromise;
+  } finally {
+    connectionPromise = undefined;
+  }
 }
 
 // SUBSCRIBE/UNSUBSCRIBE SYMBOL
@@ -151,3 +169,16 @@ export function unsubscribeFromSymbol(symbol: string): void {
     }
   alpacaSocket.send(JSON.stringify(unsubscription));
 }
+
+export function disconnectFromAlpaca(): void {
+  isAuthenticated = false;
+  if (!alpacaSocket) {
+    return;
+  }
+  alpacaSocket.close();
+}
+
+export function isAlpacaConnected(): boolean {
+  return isAuthenticated && alpacaSocket?.readyState === WebSocket.OPEN;
+}
+

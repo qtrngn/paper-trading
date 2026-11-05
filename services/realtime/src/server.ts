@@ -1,8 +1,9 @@
 import 'dotenv/config';
 import { createServer } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
-import { connectToAlpaca, subscribeToSymbol, unsubscribeFromSymbol } from './alpacaClient.js';
+import { unsubscribeFromSymbol } from './alpacaClient.js';
 import type { QuoteUpdate, TradeUpdate, SymbolSubscriptionRequest, BarUpdate } from './_types.js';
+import { createMarketConnection } from './marketConnection.js';
 
 const port = Number(process.env.PORT || '8080');
 
@@ -13,29 +14,43 @@ const server = createServer((_req, res) => {
 
 const webSocketServer = new WebSocketServer({ server });
 const subscribersBySymbol = new Map<string, Set<WebSocket>>();
+const marketConnection = createMarketConnection(
+  () => Array.from(subscribersBySymbol.keys()),
+  {
+    onQuote: handleQuoteUpdate,
+    onTrade: handleTradeUpdate,
+    onBar: (bar) => handleBarUpdate(bar, 'bar'),
+    onUpdatedBar: (bar) => handleBarUpdate(bar, 'updatedBar'),
+  },
+);
 
-function addSubscriber(symbol:string, socket: WebSocket) {
+function addSubscriber(symbol: string, socket: WebSocket) {
   const normalizedSymbol = symbol.trim().toUpperCase();
   let subscribers = subscribersBySymbol.get(normalizedSymbol);
   if (!subscribers) {
     subscribers = new Set<WebSocket>();
-    subscribersBySymbol.set(normalizedSymbol, subscribers)
+    subscribersBySymbol.set(normalizedSymbol, subscribers);
   }
   const isFirstSubscriber = subscribers.size === 0;
   subscribers.add(socket);
+
   if (isFirstSubscriber) {
-    subscribeToSymbol(normalizedSymbol);
+    marketConnection.handleSubscriptionsChanged();
   }
 }
 
 function removeSubscriberFromAllSymbols(socket: WebSocket): void {
-   for (const [symbol, subscribers] of subscribersBySymbol) {
+  for (const [symbol, subscribers] of subscribersBySymbol) {
     const wasRemoved = subscribers.delete(socket);
 
     if (wasRemoved && subscribers.size === 0) {
       subscribersBySymbol.delete(symbol);
       unsubscribeFromSymbol(symbol);
     }
+  }
+
+  if (subscribersBySymbol.size === 0) {
+    marketConnection.handleSubscriptionsChanged();
   }
 }
 
@@ -44,15 +59,19 @@ webSocketServer.on('connection', (socket) => {
     const subscriptionRequest = JSON.parse(data.toString()) as SymbolSubscriptionRequest;
     // console.log(subscriptionRequest);
     if (subscriptionRequest.type === 'subscribe') {
-      addSubscriber(subscriptionRequest.symbol, socket)
+      addSubscriber(subscriptionRequest.symbol, socket);
     }
   });
-  socket.on('close',() => { removeSubscriberFromAllSymbols(socket)});
+  socket.on('close', () => {
+    removeSubscriberFromAllSymbols(socket);
+  });
 });
 
 function handleQuoteUpdate(quote: QuoteUpdate): void {
-  const subscribers = subscribersBySymbol.get(quote.symbol)
-  if (!subscribers) {return}
+  const subscribers = subscribersBySymbol.get(quote.symbol);
+  if (!subscribers) {
+    return;
+  }
   console.log(quote);
   const quoteMessage = {
     type: 'quote',
@@ -69,7 +88,9 @@ function handleQuoteUpdate(quote: QuoteUpdate): void {
 
 function handleTradeUpdate(trade: TradeUpdate): void {
   const subscribers = subscribersBySymbol.get(trade.symbol);
-  if (!subscribers) {return}
+  if (!subscribers) {
+    return;
+  }
   console.log(trade);
   const tradeMessage = {
     type: 'trade',
@@ -85,7 +106,9 @@ function handleTradeUpdate(trade: TradeUpdate): void {
 
 function handleBarUpdate(bar: BarUpdate, type: 'bar' | 'updatedBar'): void {
   const subscribers = subscribersBySymbol.get(bar.symbol);
-  if (!subscribers) {return}
+  if (!subscribers) {
+    return;
+  }
   const barMessage = {
     type,
     data: bar,
@@ -99,12 +122,10 @@ function handleBarUpdate(bar: BarUpdate, type: 'bar' | 'updatedBar'): void {
 }
 
 export async function startServer() {
-  await connectToAlpaca({ onQuote: handleQuoteUpdate, onTrade: handleTradeUpdate, onBar:(bar) => handleBarUpdate(bar, 'bar'), onUpdatedBar: (bar) => handleBarUpdate(bar, 'updatedBar')  });
   server.listen(port, () => {
     console.log(`Server started on ${port}`);
   });
 }
-
 startServer().catch((error) => {
   console.error('Failed to start server:', error);
   process.exit(1);
