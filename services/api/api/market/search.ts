@@ -2,8 +2,8 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { requireMethod } from "../_lib/http/requireMethod";
 import { requireUid } from "../_lib/auth/requireUid";
 import { getSingleQueryParam } from "../_lib/http/query";
-import { parseSymbol } from "../market/symbol";
-import { fetchAlpacaBars } from "./alpacaBars";
+import { parseSymbol } from "../_lib/market/symbol";
+import { fetchAlpacaBars } from "../_lib/market/alpacaBars";
 
 type RawSearchSuggestion = {
   symbol: string;

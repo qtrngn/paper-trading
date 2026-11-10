@@ -1,6 +1,6 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { requireUid } from "../_lib/auth/requireUid";
-import { parseSymbol } from "./symbol";
+import { parseSymbol } from "../_lib/market/symbol";
 import { getSingleQueryParam } from "../_lib/http/query";
 import { requireMethod } from "../_lib/http/requireMethod";
 import { getStockSnapshot } from "../_lib/market/snapshot";

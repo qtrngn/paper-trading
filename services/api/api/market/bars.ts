@@ -2,9 +2,9 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { requireMethod } from "../_lib/http/requireMethod";
 import { requireUid } from "../_lib/auth/requireUid";
 import { getSingleQueryParam } from "../_lib/http/query";
-import { parseSymbol } from "./symbol";
-import { fetchAlpacaBars } from "./alpacaBars";
-import { normalizeRange, isChartRange, getRangeDefinition, toAlpacaTimeframe } from "./chartRange";
+import { parseSymbol } from "../_lib/market/symbol";
+import { fetchAlpacaBars } from "../_lib/market/alpacaBars";
+import { normalizeRange, isChartRange, getRangeDefinition, toAlpacaTimeframe } from "../_lib/market/chartRange";
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // METHOD GUARD

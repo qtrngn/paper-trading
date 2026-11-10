@@ -1,7 +1,7 @@
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import { requireUid } from "../_lib/auth/requireUid";
-import { parseSymbol } from "./symbol";
-import { getAlpacaHeaders, fetchAlpacaJson, getAlpacaBaseUrl } from "./alpaca";
+import { parseSymbol } from "../_lib/market/symbol";
+import { getAlpacaHeaders, fetchAlpacaJson, getAlpacaBaseUrl } from "../_lib/market/alpaca";
 import { getSingleQueryParam } from "../_lib/http/query";
 import { requireMethod } from "../_lib/http/requireMethod";
 import type { AlpacaQuote } from "./_types";

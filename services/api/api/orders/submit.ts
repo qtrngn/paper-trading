@@ -6,7 +6,7 @@ import { getOrCreateAccount } from "../_lib/trading/account";
 import { getStockSnapshot } from "../_lib/market/snapshot";
 import { executeOrder } from "../_lib/trading/orderExecution";
 import { getPositionBySymbol, type PositionDoc } from "../_lib/trading/position";
-import { parseSymbol } from "../market/symbol";
+import { parseSymbol } from "../_lib/market/symbol";
 import { getDb } from "../_lib/db/mongo";
 import { buildOrderDoc } from "../_lib/trading/order";
 import { buildActivityDoc } from "../_lib/trading/activities";

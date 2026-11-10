@@ -1,7 +1,7 @@
 import type { ChartRange } from "./chartRange";
 import { getDateRangeFromLookback, getRangeDefinition, toAlpacaTimeframe } from "./chartRange";
 import { getAlpacaBaseUrl, getAlpacaHeaders, fetchAlpacaJson } from "./alpaca";
-import type { AlpacaBar } from "./_types";
+import type { AlpacaBar } from "../../market/_types";
 
 type AlpacaBarsResponse = {
   bars: Record<string, AlpacaBar[]>;

@@ -1,4 +1,4 @@
-import { getAlpacaHeaders, fetchAlpacaJson, getAlpacaBaseUrl } from '../../market/alpaca';
+import { getAlpacaHeaders, fetchAlpacaJson, getAlpacaBaseUrl } from './alpaca';
 import type { AlpacaQuote, AlpacaTrade, AlpacaBar } from '../../market/_types';
 
 type AlpacaSnapshotData = {
