@@ -1,6 +1,6 @@
 {
   "rewrites": [
-    { "source": "/api/(.*)", "destination": "https://YOUR-API-PROJECT.vercel.app/api/$1" },
+    { "source": "/api/(.*)", "destination": "https://paper-trading-db.vercel.app/api/$1" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
   "headers": [
