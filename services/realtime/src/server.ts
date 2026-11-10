@@ -100,7 +100,6 @@ function handleQuoteUpdate(quote: QuoteUpdate): void {
   if (!subscribers) {
     return;
   }
-  console.log(quote);
   const quoteMessage = {
     type: 'quote',
     data: quote,
@@ -119,7 +118,6 @@ function handleTradeUpdate(trade: TradeUpdate): void {
   if (!subscribers) {
     return;
   }
-  console.log(trade);
   const tradeMessage = {
     type: 'trade',
     data: trade,
