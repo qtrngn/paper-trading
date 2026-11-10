@@ -343,7 +343,7 @@
   }
 
   .chart-header-bordered {
-    @apply border-b p-0!;
+    @apply border-b;
   }
 
   .chart-header-copy {

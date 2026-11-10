@@ -25,7 +25,7 @@ import {
       <Card className="chart-card">
         <CardHeader className="chart-header chart-header-bordered">
           <div className="chart-header-copy">
-            <CardTitle>{title}</CardTitle>
+            <CardTitle className="card-title-lg">{title}</CardTitle>
             <CardDescription>{description}</CardDescription>
           </div>
   
