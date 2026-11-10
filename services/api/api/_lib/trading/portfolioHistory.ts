@@ -1,4 +1,5 @@
 import {getDb} from "../db/mongo";
+import {getPortfolio} from "./portfolio";
 
 export type PortfolioHistoryDoc = {
     uid: string;
@@ -21,5 +22,14 @@ export async function getPortfolioHistory(uid: string): Promise<PortfolioHistory
 }
 
 export async function recordPortfolioSnapshot(uid: string): Promise<void> {
-    
-}
+    const {summary} = await getPortfolio(uid);
+    if (summary.equity === null) return;
+    const snapshot: PortfolioHistoryDoc = {
+        uid,
+        timestamp: new Date(),
+        cash: summary.cash,
+        marketValue: summary.marketValue,
+        equity: summary.equity,
+    };
+    await savePortfolioSnapshot(snapshot); 
+    }
