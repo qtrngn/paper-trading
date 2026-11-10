@@ -39,3 +39,12 @@ export async function getOrCreateAccount(uid: string): Promise<AccountDoc> {
   }
   return account;
 }
+
+export async function getAllAccountUids(): Promise<string[]> {
+  const db = await getDb();
+  const docs = await db
+    .collection<AccountDoc>('accounts')
+    .find({}, { projection: { _id: 0, uid: 1 } })
+    .toArray();
+  return docs.map((doc) => doc.uid);
+}
