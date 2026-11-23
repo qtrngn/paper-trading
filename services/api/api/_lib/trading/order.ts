@@ -1,3 +1,5 @@
+import { getDb } from "../db/mongo";
+
 export type OrderSide = "buy" | "sell";
 export type OrderType = "market" | "limit";
 export type OrderStatus = "pending" | "filled" | "cancelled" | "rejected";
@@ -48,4 +50,11 @@ export function buildOrderDoc(input: BuildOrderInput): OrderDoc {
     createdAt: now,
     updatedAt: now,
   };
+}
+
+// ORDERS FOR ONE USER, NEWEST FIRST
+export async function getOrdersByUser(uid: string) {
+  const db = await getDb();
+  const orders = db.collection<OrderDoc>("orders");
+  return orders.find({ uid }).sort({ createdAt: -1 }).toArray();
 }
