@@ -1,9 +1,14 @@
-
-  {
-    "crons": [
-      {
-        "path": "/api/cron/snapshot",
-        "schedule": "0 22 * * 1-5"
-      }
-    ]
-  }
+{
+  "crons": [
+    {
+      "path": "/api/cron/snapshot",
+      "schedule": "0 22 * * 1-5"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/router?route=$1"
+    }
+  ]
+}
