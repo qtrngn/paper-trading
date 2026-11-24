@@ -3,6 +3,7 @@ import { usePortfolio } from '@/hooks/usePortfolio';
 import { useAuth } from '@/hooks/useAuth';
 import { formatPrice } from '@/lib/formatters';
 import { Button } from '@/components/ui/button';
+import PortfolioHistoryChart from '@/components/features/portfolio/PortfolioHistoryChart';
 
 function formatSignedPrice(value: number) {
   return value > 0 ? `+${formatPrice(value)}` : formatPrice(value);
@@ -63,15 +64,7 @@ export default function HomePage() {
                 {accountValueDisplay}
               </h2>
 
-              <div className="portfolio-history-placeholder">
-                <div className="space-y-2">
-                  <p className="card-title">Portfolio history</p>
-                  <p className="body-text-sm">
-                    Your account value chart will appear here after portfolio
-                    history is added.
-                  </p>
-                </div>
-              </div>
+              <PortfolioHistoryChart />
             </section>
 
             <div className="portfolio-summary-grid">

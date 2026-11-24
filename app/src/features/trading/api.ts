@@ -19,7 +19,7 @@ return [orders]
 
 
 import { api } from "@/lib/api";
-import type { Order, OrderSide, OrderType, Portfolio } from "./types";
+import type { Order, OrderSide, OrderType, Portfolio, PortfolioHistoryPoint } from "./types";
 
 
 
@@ -29,6 +29,10 @@ type GetOrdersResponse = {
 
 type SubmitOrderResponse = {
     order: Order;
+}
+
+type GetPortfolioHistoryResponse = {
+    points: PortfolioHistoryPoint[];
 }
 
 type SubmitOrderRequest = {
@@ -58,6 +62,12 @@ export async function submitOrder(orderInput: SubmitOrderRequest): Promise<Order
 export async function getPortfolio(): Promise<Portfolio> {
     const response = await api.get<Portfolio>("/api/portfolio");
     return response.data;
+}
+
+// GET PORTFOLIO HISTORY
+export async function getPortfolioHistory(): Promise<PortfolioHistoryPoint[]> {
+    const response = await api.get<GetPortfolioHistoryResponse>("/api/portfolio/history");
+    return response.data.points;
 }
 
  

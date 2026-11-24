@@ -45,6 +45,13 @@ export type Portfolio = {
   positions: PortfolioPosition[];
 };
 
+export type PortfolioHistoryPoint = {
+  timestamp: string;
+  cash: number;
+  marketValue: number | null;
+  equity: number | null;
+};
+
 export type QuoteView = {
     symbol: string;
     last: number;
