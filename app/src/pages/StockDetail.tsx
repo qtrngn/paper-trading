@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useStockBars } from '@/hooks/useStockBars';
 import { useStockSnapshot } from '@/hooks/useStockSnapshot';
@@ -22,9 +23,26 @@ export default function StockDetailPage() {
   }
 
   // CHART STATE
-  const { bars, barsLoading, barsError } = useStockBars(selectedSymbol, range);
+  const { bars, barsLoading, barsError, session, previousClose, refetchBars } = useStockBars(selectedSymbol, range);
   const { snapshot } = useStockSnapshot(selectedSymbol);
   const { latestQuote, latestTrade, liveBars } = useRealtimeMarketData(selectedSymbol);
+
+  // SESSION ROLLOVER (1D)
+  // If live data arrives after the session the chart shows has closed, a new session has
+  // started (e.g. the page was opened before 9:30). Refetch so the backend returns the new
+  // session, its bars and the right previous close.
+  const latestLiveTime = Math.max(
+    liveBars.length > 0 ? Date.parse(liveBars[liveBars.length - 1].timestamp) : 0,
+    latestTrade ? Date.parse(latestTrade.timestamp) : 0,
+  );
+  const sessionClose = session ? Date.parse(session.close) : null;
+  const sessionHasRolledOver = range === '1D' && sessionClose !== null && latestLiveTime > sessionClose;
+
+  useEffect(() => {
+    if (sessionHasRolledOver) {
+      void refetchBars();
+    }
+  }, [sessionHasRolledOver, refetchBars]);
   const historicalPoints: ChartPoint[] = bars.map((bar) => ({
     time: bar.t,
     price: bar.c,
@@ -44,6 +62,8 @@ export default function StockDetailPage() {
           error={barsError}
           range={range}
           onRangeChange={handleRangeChange}
+          session={session}
+          previousClose={previousClose}
         />
 
         {selectedSymbol ? (

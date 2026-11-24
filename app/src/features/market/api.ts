@@ -1,5 +1,5 @@
 import { api } from "@/lib/api";
-import type { Quote, Bar, SearchSuggestions, SnapshotResponse } from "./types";
+import type { Quote, Bar, ChartSession, SearchSuggestions, SnapshotResponse } from "./types";
 
 
 type GetQuoteResponse = {
@@ -12,6 +12,8 @@ type GetBarsResponse = {
     symbol: string;
     range: string;
     timeframe: string;
+    session: ChartSession | null; // only for 1D
+    previousClose: number | null; // only for 1D
 }
 
 type GetSearchSuggestionsResponse = {

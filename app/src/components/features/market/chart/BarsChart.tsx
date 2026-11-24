@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Line, LineChart, XAxis, YAxis } from "recharts";
+import { Line, LineChart, ReferenceLine, XAxis, YAxis } from "recharts";
 import {
   Card,
   CardContent,
@@ -14,7 +14,7 @@ import {
   type ChartConfig,
 } from "@/components/ui/chart";
 import ChartState from "./ChartState";
-import type { ChartPoint } from "@/features/market/types";
+import type { ChartPoint, ChartSession } from "@/features/market/types";
 import { formatPrice } from "@/lib/formatters";
 import { getChartSummary, getDisplayChartSummary } from "@/features/market/chartSummary";
 import ButtonRanges from "./ButtonRanges";
@@ -26,9 +26,11 @@ type BarsChartProps = {
   error: string | null;
   range: string;
   onRangeChange: (nextRange: string) => void;
+  session: ChartSession | null; // 1D only: x-axis runs from open to close
+  previousClose: number | null; // 1D only: dashed line + baseline for the change
 };
 
-export default function BarsChart({points, symbol,loading, error, range, onRangeChange}: BarsChartProps) {
+export default function BarsChart({points, symbol,loading, error, range, onRangeChange, session, previousClose}: BarsChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<ChartPoint | null>(null);
 
   // CARDS
@@ -81,8 +83,16 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
   }
 
   // CHART DATA
-  // const chartData = getChartSummary(points);
-  const summary = getChartSummary(points);
+  const summary = getChartSummary(points, previousClose);
+
+  // 1D: place points by real time, so the line only covers the part of the session that has happened
+  const sessionDomain: [number, number] | null = session
+    ? [Date.parse(session.open), Date.parse(session.close)]
+    : null;
+  const chartData = points.map((point) => ({
+    ...point,
+    timestamp: Date.parse(point.time),
+  }));
   const displaySummary = getDisplayChartSummary(summary, hoveredPoint);
   const lineColor = summary.isPositive
     ? "var(--success)"
@@ -127,7 +137,7 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
         >
           <LineChart
             accessibilityLayer
-            data={points}
+            data={chartData}
             margin={{ left: 12, right: 12 }}
             onMouseMove={(state) => {
               const payload = state?.activePayload?.[0]?.payload;
@@ -140,29 +150,59 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
             }}
             onMouseLeave={() => setHoveredPoint(null)}
           >
-            <XAxis dataKey="time" hide />
+            {sessionDomain ? (
+              <XAxis
+                dataKey="timestamp"
+                type="number"
+                scale="time"
+                domain={sessionDomain}
+                allowDataOverflow
+                hide
+              />
+            ) : (
+              <XAxis dataKey="time" hide />
+            )}
             <YAxis
               hide
               domain={([dataMin, dataMax]: [number, number]) => {
-                const range = dataMax - dataMin;
+                // keep the previous close line inside the chart
+                const low = previousClose === null ? dataMin : Math.min(dataMin, previousClose);
+                const high = previousClose === null ? dataMax : Math.max(dataMax, previousClose);
+                const range = high - low;
                 const padding =
-                  range === 0 ? dataMin * 0.01 || 1 : range * 0.03;
-                return [dataMin - padding, dataMax + padding];
+                  range === 0 ? low * 0.01 || 1 : range * 0.03;
+                return [low - padding, high + padding];
               }}
             />
+            {previousClose !== null && (
+              <ReferenceLine
+                y={previousClose}
+                stroke="var(--text-muted)"
+                strokeDasharray="4 4"
+                strokeOpacity={0.6}
+              />
+            )}
             <ChartTooltip
               content={
                 <ChartTooltipContent
                   className="w-37.5"
                   nameKey="price"
                   formatter={(value) => formatPrice(Number(value))}
-                  labelFormatter={(value) =>
-                    new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }
+                  labelFormatter={(_, payload) => {
+                    const time = payload?.[0]?.payload?.time;
+                    if (!time) return "";
+                    // 1D shows the time of day, longer ranges show the date
+                    return sessionDomain
+                      ? new Date(time).toLocaleTimeString("en-US", {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })
+                      : new Date(time).toLocaleDateString("en-US", {
+                          month: "short",
+                          day: "numeric",
+                          year: "numeric",
+                        });
+                  }}
                 />
               }
             />

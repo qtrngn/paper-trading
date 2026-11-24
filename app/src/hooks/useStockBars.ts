@@ -20,8 +20,11 @@ export function useStockBars(symbol: string | null, range: string) {
   return { 
     bars: barsQuery.data?.bars ?? [],
     timeframe: barsQuery.data?.timeframe ?? null,
+    session: barsQuery.data?.session ?? null,
+    previousClose: barsQuery.data?.previousClose ?? null,
     barsLoading: barsQuery.isLoading,
     barsError: barsQuery.error ? 'Failed to load bars' : null,
+    refetchBars: barsQuery.refetch,
    };
 }
 

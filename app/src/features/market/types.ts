@@ -7,6 +7,12 @@ export type Bar = {
   v: number; // volume
 };
 
+// Trading session a 1D chart covers (ISO timestamps)
+export type ChartSession = {
+  open: string;
+  close: string;
+};
+
 export type Quote = {
   bp: number; // bid price
   bs: number; // bid size

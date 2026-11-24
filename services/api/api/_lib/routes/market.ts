@@ -3,8 +3,8 @@ import { requireMethod } from "../http/requireMethod";
 import { requireUid } from "../auth/requireUid";
 import { getSingleQueryParam } from "../http/query";
 import { parseSymbol } from "../market/symbol";
-import { fetchAlpacaBars } from "../market/alpacaBars";
-import { normalizeRange, isChartRange, getRangeDefinition, toAlpacaTimeframe } from "../market/chartRange";
+import { getChartData } from "../market/chartData";
+import { normalizeRange, isChartRange } from "../market/chartRange";
 import { getLatestQuote } from "../market/quote";
 import { getStockSnapshot } from "../market/snapshot";
 import { searchMarketSuggestions } from "../market/search";
@@ -35,12 +35,9 @@ export async function barsHandler(req: VercelRequest, res: VercelResponse) {
   if (!isChartRange(range)) {
     return res.status(400).json({ error: "Missing or invalid range" });
   }
-  const selectedRangeConfig = getRangeDefinition(range);
-  const timeframe = toAlpacaTimeframe(selectedRangeConfig.grouping);
-
   // ALPACA API CALL
   try {
-    const bars = await fetchAlpacaBars(symbol, range);
+    const { bars, timeframe, session, previousClose } = await getChartData(symbol, range);
     res.setHeader("Cache-Control", "no-store");
 
     return res.status(200).json({
@@ -48,6 +45,8 @@ export async function barsHandler(req: VercelRequest, res: VercelResponse) {
       range,
       bars,
       timeframe,
+      session,
+      previousClose,
     });
   } catch (error) {
     const message = error instanceof Error ? error.message : "unknown_error";

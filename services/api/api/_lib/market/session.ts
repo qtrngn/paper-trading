@@ -14,12 +14,13 @@ type AlpacaCalendarDay = {
 };
 
 export type TradingSession = {
+  date: string; // New York date of the session, "YYYY-MM-DD"
   open: Date;
   close: Date;
 };
 
 // Calendar date in New York, as "YYYY-MM-DD"
-function getNewYorkDate(date: Date): string {
+export function getNewYorkDate(date: Date): string {
   return new Intl.DateTimeFormat("en-CA", {
     timeZone: MARKET_TIME_ZONE,
     year: "numeric",
@@ -66,7 +67,7 @@ export async function getLatestTradingSession(now: Date = new Date()): Promise<T
     const day = days[i];
     const open = newYorkTimeToUtc(day.date, day.open);
     if (open.getTime() <= now.getTime()) {
-      return { open, close: newYorkTimeToUtc(day.date, day.close) };
+      return { date: day.date, open, close: newYorkTimeToUtc(day.date, day.close) };
     }
   }
 
