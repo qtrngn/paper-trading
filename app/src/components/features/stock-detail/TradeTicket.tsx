@@ -7,6 +7,7 @@
 */
 
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 // UI components
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,12 +15,26 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { ArrowDownUp, ArrowLeft, MinusIcon, PlusIcon } from "lucide-react";
 
 import OrderTypeDropdown from "@/components/features/stock-detail/OrderTypeDropdown";
+import { useSubmitOrder, getSubmitOrderErrorMessage } from "@/hooks/useSubmitOrder";
+import { usePortfolio } from "@/hooks/usePortfolio";
+import { formatPrice } from "@/lib/formatters";
 
 // Types
-import type { OrderSide, OrderType } from "@/features/trading/types.ts";
+import type { Order, OrderSide, OrderType } from "@/features/trading/types.ts";
+
+// One-line confirmation for a placed order
+function describeOrder(order: Order): string {
+  const action = order.side === "buy" ? "Bought" : "Sold";
+  if (order.status === "filled" && order.fillPrice !== null) {
+    return `${action} ${order.qty} ${order.symbol} at ${formatPrice(order.fillPrice)}`;
+  }
+  const limitText = order.limitPrice !== null ? ` at ${formatPrice(order.limitPrice)}` : "";
+  return `Limit order placed: ${order.side} ${order.qty} ${order.symbol}${limitText}. It will fill when the price is reached.`;
+}
 
 type TradeTicketProps = {
   symbol: string;
@@ -38,11 +53,19 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
   const [isReviewing, setIsReviewing] = useState(false);
   const [limitPrice, setLimitPrice] = useState("");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const submitOrderMutation = useSubmitOrder();
+
+  // All of the user's holdings (same cached data as the Home page,
+  // refreshed automatically after an order)
+  const { portfolio, portfolioLoading } = usePortfolio();
+  const positions = portfolio?.positions ?? [];
 
   // HANDLERS
   // next button click
   function handleNext() {
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     const trimmedQuantity = quantity.trim();
     const qtyNumber = Number(trimmedQuantity);
@@ -131,6 +154,40 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
 
   const estimatedCost = isQuantityValid && isEstimatedPriceValid ? quantityNumber * estimatedPrice : 0;
   const estimatedShares = isQuantityValid && isEstimatedPriceValid ? quantityNumber / estimatedPrice : 0;
+
+  // Place order button click (review screen)
+  function handlePlaceOrder() {
+    setErrorMessage(null);
+
+    // The backend trades in shares. Dollar amounts are converted, rounded DOWN to
+    // 4 decimals so the cost never ends up slightly above the amount entered.
+    const qty = tradeUnit === "dollars" ? Math.floor(estimatedShares * 10_000) / 10_000 : quantityNumber;
+
+    if (!Number.isFinite(qty) || qty <= 0) {
+      setErrorMessage("Amount is too small to trade.");
+      return;
+    }
+
+    submitOrderMutation.mutate(
+      {
+        symbol,
+        side,
+        qty,
+        type: orderType,
+        limitPrice: orderType === "limit" ? limitPriceNumber : null,
+      },
+      {
+        onSuccess: (order) => {
+          setSuccessMessage(describeOrder(order));
+          setQuantity("");
+          setIsReviewing(false);
+        },
+        onError: (error) => {
+          setErrorMessage(getSubmitOrderErrorMessage(error));
+        },
+      },
+    );
+  }
 
   return (
     // TRADE CARD
@@ -246,38 +303,99 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
                 <dl className="flex items-center justify-between">
                   <dt className="label-text-strong">{tradeUnit === "shares" ? "Estimated cost" : "Estimated shares"}</dt>
                   <dd className="label-text-strong text-lg">
-                    {tradeUnit === "shares" ? `$${estimatedCost.toFixed(2)} CAD` : isQuantityValid ? `${estimatedShares.toFixed(4)}` : "0"}
+                    {tradeUnit === "shares" ? `$${estimatedCost.toFixed(2)} USD` : isQuantityValid ? `${estimatedShares.toFixed(4)}` : "0"}
                   </dd>
                 </dl>
               </div>
             </section>
 
             {errorMessage ? <p className="error-text">{errorMessage}</p> : null}
+            {successMessage ? <p className="text-positive text-sm">{successMessage}</p> : null}
 
             {/* BUTTON */}
             <Button type="button" variant="muted" onClick={handleNext} disabled={isNextDisabled} className="h-14 w-full rounded-full">
               Next
             </Button>
 
-            {/* PAST ORDERS AVAILABLE */}
-            <footer className="px-4 pb-3">
-              <button type="button" className="flex w-full items-center justify-between text-left">
-                <span>
-                  <span className="value-text-sm block">TFSA</span>
-                  <span className="number-text block text-sm">$140.23 CAD</span>
-                </span>
+            {/* ALL POSITIONS */}
+            <footer className="positions-panel">
+              <div className="positions-panel-header">
+                <span className="label-text-strong">Positions</span>
+                {positions.length > 0 ? <span className="caption-text">{positions.length}</span> : null}
+              </div>
 
-                <span aria-hidden="true" className="text-text-primary">
-                  ⌄
-                </span>
-              </button>
+              {portfolioLoading ? (
+                <p className="caption-text px-4 py-3">Loading...</p>
+              ) : positions.length === 0 ? (
+                <p className="caption-text px-4 py-3">No positions yet.</p>
+              ) : (
+                <TooltipProvider delayDuration={200}>
+                  <ul>
+                    {positions.map((position) => {
+                      const returnPercent = position.unrealizedProfitLossPercent;
+                      const returnClass =
+                        returnPercent === null || returnPercent === 0
+                          ? "text-neutral-status"
+                          : returnPercent > 0
+                            ? "text-positive"
+                            : "text-negative";
+
+                      return (
+                        <li key={position.symbol}>
+                          <Link
+                            to={`/stocks/${position.symbol}`}
+                            className={`position-row ${position.symbol === symbol ? "position-row-active" : ""}`}
+                          >
+                            <span className="min-w-0">
+                              {/* Hovering the symbol shows the company name */}
+                              {position.name ? (
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <span className="value-text-sm block w-fit">{position.symbol}</span>
+                                  </TooltipTrigger>
+                                  <TooltipContent side="top">{position.name}</TooltipContent>
+                                </Tooltip>
+                              ) : (
+                                <span className="value-text-sm block">{position.symbol}</span>
+                              )}
+                              <span className="caption-text block">
+                                {position.quantity} {position.quantity === 1 ? "share" : "shares"}
+                              </span>
+                            </span>
+
+                            <span className="shrink-0 text-right">
+                              <span className="number-text block text-sm font-semibold">
+                                {position.marketValue !== null ? formatPrice(position.marketValue) : "Unavailable"}
+                              </span>
+                              {returnPercent !== null ? (
+                                <span className={`${returnClass} block text-xs`}>
+                                  {returnPercent > 0 ? "+" : ""}
+                                  {returnPercent.toFixed(2)}%
+                                </span>
+                              ) : null}
+                            </span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </TooltipProvider>
+              )}
             </footer>
           </form>
         ) : (
           // REVIEW ORDER
           <section className="trade-review-panel">
             {/* BACK BUTTON */}
-            <Button variant="ghost" className="p-0! cursor-pointer" onClick={() => setIsReviewing(false)}>
+            <Button
+              variant="ghost"
+              className="p-0! cursor-pointer"
+              disabled={submitOrderMutation.isPending}
+              onClick={() => {
+                setErrorMessage(null);
+                setIsReviewing(false);
+              }}
+            >
               <ArrowLeft />
               Back
             </Button>
@@ -291,8 +409,17 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
               <div>
                 <div className="review-order-row border-b-0">
                   <dt className="label-text-strong text-primary">Order type</dt>
-                  <dd className="label-text-strong">Market</dd>
+                  <dd className="label-text-strong">
+                    {side === "buy" ? "Buy" : "Sell"} · {orderType === "market" ? "Market" : "Limit"}
+                  </dd>
                 </div>
+
+                {orderType === "limit" ? (
+                  <div className="review-order-row border-b-0">
+                    <dt className="label-text-strong text-primary">Limit price</dt>
+                    <dd className="label-text-strong">{formatPrice(limitPriceNumber)}</dd>
+                  </div>
+                ) : null}
 
                 <div className="review-order-row">
                   <dt className="label-text-strong text-primary">{tradeUnit === "shares" ? "Shares" : "Dollars"}</dt>
@@ -301,15 +428,27 @@ export default function TradeTicket({ symbol, bidPrice, askPrice }: TradeTicketP
               </div>
 
               <div className="review-order-row">
-                <dt className="label-text-strong text-primary">Account</dt>
+                <dt className="label-text-strong text-primary">Symbol</dt>
                 <dd className="label-text-strong">{symbol}</dd>
               </div>
 
               <div className="review-order-row">
                 <dt className="label-text-strong text-primary">{tradeUnit === "shares" ? "Estimated cost" : "Estimated shares"}</dt>
-                <dd className="label-text-strong">{tradeUnit === "shares" ? `$${estimatedCost.toFixed(2)} CAD` : estimatedShares.toFixed(4)}</dd>
+                <dd className="label-text-strong">{tradeUnit === "shares" ? `$${estimatedCost.toFixed(2)} USD` : estimatedShares.toFixed(4)}</dd>
               </div>
             </dl>
+
+            {errorMessage ? <p className="error-text mt-4">{errorMessage}</p> : null}
+
+            {/* PLACE ORDER */}
+            <Button
+              type="button"
+              onClick={handlePlaceOrder}
+              disabled={submitOrderMutation.isPending}
+              className="mt-6 h-14 w-full rounded-full"
+            >
+              {submitOrderMutation.isPending ? "Placing order..." : side === "buy" ? "Place buy order" : "Place sell order"}
+            </Button>
           </section>
         )}
       </CardContent>

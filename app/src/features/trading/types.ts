@@ -21,6 +21,7 @@ export type Order = {
 
 export type PortfolioPosition = {
   symbol: string;
+  name: string | null; // company name, null if it couldn't be loaded
   quantity: number;
   averageCost: number;
   currentPrice: number | null;

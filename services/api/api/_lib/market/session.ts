@@ -1,7 +1,5 @@
-import { getAlpacaHeaders, fetchAlpacaJson } from "./alpaca";
+import { getAlpacaHeaders, fetchAlpacaJson, ALPACA_TRADING_BASE_URL } from "./alpaca";
 
-// Market calendar lives on the trading API, not the market data API
-const ALPACA_TRADING_BASE_URL = "https://paper-api.alpaca.markets/v2/";
 const MARKET_TIME_ZONE = "America/New_York";
 const CALENDAR_LOOKBACK_DAYS = 10;
 const DAY_MS = 24 * 60 * 60 * 1000;

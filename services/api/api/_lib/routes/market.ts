@@ -7,6 +7,7 @@ import { getChartData } from "../market/chartData";
 import { normalizeRange, isChartRange } from "../market/chartRange";
 import { getLatestQuote } from "../market/quote";
 import { getStockSnapshot } from "../market/snapshot";
+import { getAssetNames } from "../market/assets";
 import { searchMarketSuggestions } from "../market/search";
 
 // GET /api/market/bars?symbol=AAPL&range=1M
@@ -103,11 +104,11 @@ export async function snapshotHandler(req: VercelRequest, res: VercelResponse) {
     return res.status(400).json({ error: "Missing or invalid symbol" });
   }
 
-  // ALPACA SNAPSHOT
+  // ALPACA SNAPSHOT + COMPANY NAME
   try {
-    const snapshot = await getStockSnapshot(symbol);
+    const [snapshot, names] = await Promise.all([getStockSnapshot(symbol), getAssetNames([symbol])]);
     res.setHeader("Cache-Control", "no-store");
-    return res.status(200).json(snapshot);
+    return res.status(200).json({ ...snapshot, name: names[symbol] ?? null });
   } catch (err) {
     const message = err instanceof Error ? err.message : "unknown_error";
     return res.status(502).json({ error: "Alpaca_snapshot_failed", message });

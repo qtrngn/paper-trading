@@ -58,6 +58,7 @@ export default function StockDetailPage() {
         <BarsChart
           points={points}
           symbol={selectedSymbol}
+          companyName={snapshot?.name ?? null}
           loading={barsLoading}
           error={barsError}
           range={range}

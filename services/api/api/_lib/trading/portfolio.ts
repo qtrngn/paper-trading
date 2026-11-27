@@ -1,9 +1,11 @@
 import { getStockSnapshots } from '../market/snapshot';
+import { getAssetNames } from '../market/assets';
 import { getOrCreateAccount } from './account';
 import { getPositionsByUser, type PositionDoc } from './position';
 
 export type PortfolioPosition = {
   symbol: string;
+  name: string | null; // company name, null if it couldn't be loaded
   quantity: number;
   averageCost: number;
   currentPrice: number | null;
@@ -28,7 +30,7 @@ export type Portfolio = {
   positions: PortfolioPosition[];
 };
 
-export function buildPortfolioPosition(position: PositionDoc, currentPrice: number | null): PortfolioPosition {
+export function buildPortfolioPosition(position: PositionDoc, currentPrice: number | null, name: string | null): PortfolioPosition {
   const costBasis = position.qty * position.averageCost;
   const marketValue = currentPrice === null ? null : position.qty * currentPrice;
   const unrealizedProfitLoss = marketValue === null ? null : marketValue - costBasis;
@@ -43,6 +45,7 @@ export function buildPortfolioPosition(position: PositionDoc, currentPrice: numb
 
   return {
     symbol: position.symbol,
+    name,
     quantity: position.qty,
     averageCost: position.averageCost,
     currentPrice,
@@ -74,10 +77,10 @@ export function buildPortfolioSummary(cash: number, positions: PortfolioPosition
 export async function getPortfolio(uid: string): Promise<Portfolio> {
   const [account, storedPositions] = await Promise.all([getOrCreateAccount(uid), getPositionsByUser(uid)]);
   const symbols = storedPositions.map((position) => position.symbol);
-  const snapshots = await getStockSnapshots(symbols);
+  const [snapshots, names] = await Promise.all([getStockSnapshots(symbols), getAssetNames(symbols)]);
   const positions = storedPositions.map((position) => {
     const currentPrice = snapshots[position.symbol]?.lastSale ?? null;
-    return buildPortfolioPosition(position, currentPrice);
+    return buildPortfolioPosition(position, currentPrice, names[position.symbol] ?? null);
   });
   const summary = buildPortfolioSummary(account.cash, positions);
   return { summary, positions }; 

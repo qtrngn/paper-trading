@@ -1,3 +1,6 @@
+// Trading API (calendar, clock, assets). Market data uses ALPACA_BASE_URL instead.
+export const ALPACA_TRADING_BASE_URL = "https://paper-api.alpaca.markets/v2/";
+
 export function getAlpacaHeaders(): Record<string, string> {
   const keyId = process.env.ALPACA_API_KEY;
   const secret = process.env.ALPACA_API_SECRET_KEY;

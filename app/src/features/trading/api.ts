@@ -35,7 +35,7 @@ type GetPortfolioHistoryResponse = {
     points: PortfolioHistoryPoint[];
 }
 
-type SubmitOrderRequest = {
+export type SubmitOrderRequest = {
     symbol: string;
     side: OrderSide;
     qty: number;

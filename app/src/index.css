@@ -374,6 +374,23 @@
     @apply mt-8 space-y-4 rounded-2xl border border-border-soft bg-surface-panel p-4;
   }
 
+  /* Positions list at the bottom of the trade ticket */
+  .positions-panel {
+    @apply overflow-hidden rounded-2xl border border-border-soft bg-surface-panel;
+  }
+
+  .positions-panel-header {
+    @apply flex items-center justify-between border-b border-border-soft px-4 py-3;
+  }
+
+  .position-row {
+    @apply flex items-center justify-between gap-4 border-t border-border-soft px-4 py-3 transition-colors first:border-t-0 hover:bg-surface-soft;
+  }
+
+  .position-row-active {
+    @apply bg-surface-elevated/60;
+  }
+
   .trade-review-panel {
     @apply rounded-[28px] border border-border-soft bg-[linear-gradient(135deg,rgba(31,36,32,0.95),rgba(18,18,18,0.98))] p-5;
   }

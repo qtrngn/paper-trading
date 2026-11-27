@@ -28,6 +28,7 @@ export type SearchSuggestions = {
 
 export type SnapshotResponse = {
   symbol: string;
+  name: string | null; // company name, null if it couldn't be loaded
   open: number | null;
   high: number | null;
   low: number | null;

@@ -22,6 +22,7 @@ import ButtonRanges from "./ButtonRanges";
 type BarsChartProps = {
   points: ChartPoint[];
   symbol: string | null;
+  companyName: string | null;
   loading: boolean;
   error: string | null;
   range: string;
@@ -30,7 +31,7 @@ type BarsChartProps = {
   previousClose: number | null; // 1D only: dashed line + baseline for the change
 };
 
-export default function BarsChart({points, symbol,loading, error, range, onRangeChange, session, previousClose}: BarsChartProps) {
+export default function BarsChart({points, symbol, companyName, loading, error, range, onRangeChange, session, previousClose}: BarsChartProps) {
   const [hoveredPoint, setHoveredPoint] = useState<ChartPoint | null>(null);
 
   // CARDS
@@ -123,10 +124,25 @@ export default function BarsChart({points, symbol,loading, error, range, onRange
     <Card className="chart-card">
       <CardHeader className="chart-header">
         <div className="chart-header-copy">
-          <CardTitle className="card-title-lg">{symbol}</CardTitle>
-          <CardDescription className={descriptionColor}>
-            {descriptionText}
-          </CardDescription>
+          <div className="flex items-start justify-between gap-4">
+            {/* LEFT: symbol + company name */}
+            <div className="min-w-0">
+              <CardTitle className="card-title-lg">{symbol}</CardTitle>
+              {companyName ? (
+                <p className="caption-text mt-1 truncate">{companyName}</p>
+              ) : null}
+            </div>
+
+            {/* RIGHT: latest (or hovered) price + change */}
+            <div className="shrink-0 text-right">
+              <p className="number-text text-lg font-semibold">
+                {formatPrice(displaySummary.displayPrice)}
+              </p>
+              <CardDescription className={`${descriptionColor} mt-1`}>
+                {descriptionText}
+              </CardDescription>
+            </div>
+          </div>
         </div>
       </CardHeader>
 
